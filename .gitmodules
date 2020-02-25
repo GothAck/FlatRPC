@@ -1,0 +1,12 @@
+[submodule "vendor/inja"]
+	path = vendor/inja
+	url = https://github.com/pantor/inja
+[submodule "vendor/eternal"]
+	path = vendor/eternal
+	url = https://github.com/mapbox/eternal
+[submodule "vendor/frozen"]
+	path = vendor/frozen
+	url = https://github.com/serge-sans-paille/frozen
+[submodule "vendor/plog"]
+	path = vendor/plog
+	url = https://github.com/SergiusTheBest/plog

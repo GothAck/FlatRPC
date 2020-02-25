@@ -1,0 +1,22 @@
+namespace quteos.rpc;
+
+table Exception {
+    what: string;
+}
+
+enum RPCType : byte {
+    UNKNOWN = 0,
+    CLIENT_REQ = 1,
+    SERVER_REP = 2,
+    SERVER_REQ = 4,
+    CLIENT_REP = 8,
+
+}
+
+table RPC {
+    requestId: uint64;
+    type: RPCType;
+    name: string;
+    data: [byte];
+    exception: Exception;
+}
