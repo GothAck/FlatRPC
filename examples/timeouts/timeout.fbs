@@ -1,0 +1,14 @@
+namespace examples.timeouts;
+
+table ExpensiveReply {
+  number: uint32;
+}
+
+table ExpensiveRequest {
+  milliseconds: uint32;
+  number: uint32;
+}
+
+rpc_service Expensive {
+  ExpensiveMethod(ExpensiveRequest): ExpensiveReply;
+}
