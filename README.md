@@ -19,13 +19,12 @@ Sure, can I give it a raw socket and make it dance in < 10 minutes?
 Coming, but for now please check out the example in the examples directory.
 
 ### TODO:
-- Reimplement client side timeouts.
 - Implement server side timeouts.
 - Stop client crashing when server goes away.
 - Reconnect clients
 - Tunables
 - Test performance.
-- Allow the use of non Native Table flatbuffers.
+- [Allow the?] use [of] non Native Table flatbuffers.
 - Allow calling RPC methods with arguments instead of the request table.
 - Tests
 - Documentation
