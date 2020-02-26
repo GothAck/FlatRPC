@@ -6,6 +6,15 @@ using namespace quteos::rpc;
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
+struct LocalSocket : zmqpp::socket {
+  LocalSocket(zmqpp::context &ctx, zmqpp::socket_type type) : zmqpp::socket(ctx, type) {
+    connect("inproc://frontend");
+  }
+  ~LocalSocket() {
+    disconnect("inproc://frontend");
+  }
+};
+
 
 future<GreeterClient::HelloReplyTPtr>
 GreeterClient::SayHello(
@@ -110,6 +119,7 @@ void GreeterClient::makeRequest(
   TRequestVar req,
   TResponsePromiseVar &&resProm
 ) {
+  thread_local LocalSocket socket(_context, zmqpp::socket_type::dealer);
   auto nativeReq = make_shared<TIntNative>();
   nativeReq->requestId = nextRequestId(move(resProm), callName);
   nativeReq->type = RPCType::CLIENT_REQ;
@@ -129,6 +139,6 @@ void GreeterClient::makeRequest(
   zmqpp::message msg;
   msg << "";
   msg << buf;
-  _socket.send(msg);
+  socket.send(msg);
 }
 

@@ -3,6 +3,10 @@
 using namespace std;
 using namespace zmqpp;
 
+inline bool coinflip(float occ) {
+  return rand() < (RAND_MAX * occ);
+}
+
 RpcClientBase::RpcClientBase(zmqpp::context &ctx) :
   RpcBase(ctx, zmqpp::socket_type::dealer)
   {}
@@ -32,15 +36,8 @@ void RpcClientBase::workerThread() {
     handleResponse(move(buf));
   });
 
-  react.add(_socket, [this] {
-    running.store(false);
-  }, zmqpp::poller::poll_error);
-
-
   while (running.load()) {
-    if (!react.poll(50)) {
-      // Every 500ms max expire up to 50 timed out promises under lock
-      continue;
+    if (coinflip(0.2) || !react.poll(50)) {
       scoped_lock<recursive_mutex> lock(_mutex);
       vector<size_t> timeouts;
       auto now = std::chrono::steady_clock::now();

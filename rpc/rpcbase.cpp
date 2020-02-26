@@ -28,12 +28,20 @@ void RpcBase::run(size_t workers) {
   running.store(true);
 
   _reactorThread = thread([this]() {
-    _socket.bind("inproc://frontend");
+    zmqpp::socket frontend(_context, socket_type::dealer);
     zmqpp::socket backend(_context, socket_type::dealer);
     zmqpp::socket oob(_context, socket_type::router);
+    frontend.bind("inproc://frontend");
     backend.bind("inproc://backend");
     oob.bind("inproc://oob");
     zmqpp::reactor reactor;
+
+    reactor.add(frontend, [this, &frontend] {
+      message msg;
+      frontend.receive(msg);
+      _socket.send(msg);
+
+    });
 
     reactor.add(backend, [this, &backend] {
       message msg;
