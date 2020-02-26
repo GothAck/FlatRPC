@@ -1,3 +1,5 @@
+#include <pthread.h>
+
 #include "rpcclientbase.hpp"
 
 using namespace std;
@@ -23,6 +25,7 @@ bool RpcClientBase::connect(std::string connStr) {
 }
 
 void RpcClientBase::workerThread() {
+  pthread_setname_np(pthread_self(), __func__);
   zmqpp::socket backend(_context, socket_type::router);
   zmqpp::reactor react;
   backend.connect("inproc://backend");

@@ -1,3 +1,5 @@
+#include <pthread.h>
+
 #include "rpcserver.hpp"
 
 using namespace std;
@@ -13,6 +15,7 @@ void RpcServerBase::run(size_t workers) {
 }
 
 void RpcServerBase::workerThread() {
+  pthread_setname_np(pthread_self(), __func__);
   zmqpp::socket backend(_context, socket_type::router);
   backend.connect("inproc://backend");
 
