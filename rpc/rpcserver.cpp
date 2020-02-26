@@ -1,6 +1,6 @@
 #include <pthread.h>
 
-#include "rpcserver.hpp"
+#include "rpcserverbase.hpp"
 
 using namespace std;
 using namespace zmqpp;
