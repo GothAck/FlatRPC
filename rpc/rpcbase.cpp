@@ -53,7 +53,6 @@ void RpcBase::run(size_t workers) {
       message msg;
       oob.receive(msg);
       msg.pop_front();
-      LOG_MSG(msg, "OOB");
       _socket.send(msg);
     });
 
@@ -66,8 +65,6 @@ void RpcBase::run(size_t workers) {
       if (find(routing.begin(), routing.end(), "OOB") == routing.end()) {
         backend.send(msg);
       } else {
-        PLOG_WARNING << "Routing oob packet";
-        LOG_MSG(msg, "pre");
         zmqpp::message copy;
 
         switch(routing.size()) {
@@ -90,7 +87,6 @@ void RpcBase::run(size_t workers) {
         copy << "";
         copy << buf;
 
-        LOG_MSG(copy, "post");
         oob.send(copy);
       }
     });
@@ -134,7 +130,6 @@ std::string RpcBase::packInt(RpcBase::TIntNativePtr nativePtr) {
 RpcBase::TIntNativePtr RpcBase::makeReply(TIntNativePtr req) {
   auto rep = make_shared<TIntNative>();
   rep->requestId = req->requestId;
-  cerr << static_cast<int>(req->type) << endl;
   switch(req->type) {
     case quteos::rpc::RPCType::CLIENT_REQ:
     case quteos::rpc::RPCType::SERVER_REQ:
@@ -142,7 +137,7 @@ RpcBase::TIntNativePtr RpcBase::makeReply(TIntNativePtr req) {
         static_cast<uint8_t>(req->type) << 1);
       break;
     default:
-      throw exception("Cannot make reply from a reply"); //
+      throw exception("Cannot make reply from a reply");
   }
   rep->name = req->name;
   return rep;
