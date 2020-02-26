@@ -22,9 +22,10 @@ void RpcServerBase::workerThread() {
     message msg;
 
     backend.receive(msg);
-    auto routing = getRouting(msg);
+
+    auto routing = getRouting(msg, true);
+    assert(msg.parts() == 1);
     msg >> buf; // Read message from buffer
-    PLOG_DEBUG << msg.read_cursor();
 
     auto rep = handleRequest(move(buf), routing);
 

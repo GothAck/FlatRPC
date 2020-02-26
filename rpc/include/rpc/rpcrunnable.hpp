@@ -14,6 +14,6 @@ protected:
   const std::string _myId;
 
   static std::string genUUID();
-  static std::vector<std::string> getRouting(zmqpp::message &msg);
+  static std::vector<std::string> getRouting(zmqpp::message &msg, bool pop = false);
 };
 
