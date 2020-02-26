@@ -66,6 +66,8 @@ protected:
   TIntNativePtr unpackInt(std::string &&data);
 
   std::string packInt(TIntNativePtr nativePtr);
+  std::string packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::vector<signed char> data);
+  std::string packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::exception &exception);
 
   TIntNativePtr makeReply(TIntNativePtr req);
 

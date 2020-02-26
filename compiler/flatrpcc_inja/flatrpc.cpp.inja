@@ -131,24 +131,25 @@ void {{ service.nameClient }}::makeRequest(
   TResponsePromiseVar &&resProm
 ) {
   thread_local LocalSocket socket(_context, zmqpp::socket_type::dealer);
-  auto nativeReq = make_shared<TIntNative>();
-  nativeReq->requestId = nextRequestId(move(resProm), callName);
-  nativeReq->type = RPCType::CLIENT_REQ;
-  nativeReq->name = callName;
-  nativeReq->data = visit(overloaded {
+
+  auto buf = packInt(
+    nextRequestId(move(resProm), callName),
+    RPCType::CLIENT_REQ,
+    callName,
+    visit(overloaded {
 ## for request in service.requests
-    [&]({{ request.local }}TPtr &ptr) {
-      flatbuffers::FlatBufferBuilder fbb;
+      [&]({{ request.local }}TPtr &ptr) {
+        flatbuffers::FlatBufferBuilder fbb;
 
-      auto rep = {{ request.cpp }}::Pack(fbb, ptr.get());
-      fbb.Finish(rep);
+        auto rep = {{ request.cpp }}::Pack(fbb, ptr.get());
+        fbb.Finish(rep);
 
-      return vector<signed char>(fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize());
-    },
+        return vector<signed char>(fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize());
+      },
 ## endfor
-  }, req);
+    }, req)
+  );
 
-  auto buf = packInt(nativeReq);
   zmqpp::message msg;
   msg << "";
   msg << buf;

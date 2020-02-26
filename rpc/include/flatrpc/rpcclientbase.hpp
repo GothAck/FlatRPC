@@ -24,6 +24,9 @@ protected:
   virtual void timeoutRequest(size_t id) = 0;
   void workerThread() override;
   virtual void handleResponse(TData &&response) = 0;
+
+  void makeRequest(uint64_t requestId, flatrpc::rpc::RPCType type, std::string callName, std::vector<signed char> req);
+
   std::unordered_map<size_t, std::chrono::_V2::steady_clock::time_point> _requestTimes;
   std::unordered_map<size_t, std::string> _requestCallNames;
 };

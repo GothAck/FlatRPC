@@ -61,3 +61,14 @@ void RpcClientBase::workerThread() {
     }
   }
 }
+
+void RpcClientBase::makeRequest(uint64_t requestId, flatrpc::rpc::RPCType type, string callName, std::vector<signed char> req) {
+  thread_local LocalSocket socket(_context, zmqpp::socket_type::dealer);
+
+  auto buf = packInt(requestId, type, callName, req);
+
+  zmqpp::message msg;
+  msg << "";
+  msg << buf;
+  socket.send(msg);
+}

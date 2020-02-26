@@ -8,6 +8,8 @@
 
 using namespace std;
 using namespace zmqpp;
+using namespace flatbuffers;
+using namespace flatrpc::rpc;
 
 RpcBase::RpcBase(zmqpp::context &ctx, zmqpp
 ::socket_type type) :
@@ -159,4 +161,28 @@ void RpcBase::stop() {
 
 void RpcBase::joinReactor() {
   _reactorThread.join();
+}
+
+std::string RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::vector<signed char> data) {
+  FlatBufferBuilder fbb;
+  auto fbbName = fbb.CreateString(name);
+  auto fbbData = fbb.CreateVector<int8_t>(data);
+
+  auto rpc = CreateRPC(fbb, requestId, type, fbbName, fbbData);
+  fbb.Finish(rpc);
+
+  return {fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize()};
+}
+
+std::string RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::exception &exception) {
+  FlatBufferBuilder fbb;
+  auto fbbName = fbb.CreateString(name);
+  auto fbbWhat = fbb.CreateString(exception.what());
+  auto fbbException = CreateException(fbb, fbbWhat);
+
+
+  auto rpc = CreateRPC(fbb, requestId, type, fbbName, 0, fbbException);
+  fbb.Finish(rpc);
+
+  return {fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize()};
 }
