@@ -6,15 +6,6 @@ using namespace flatrpc::rpc;
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
-struct LocalSocket : zmqpp::socket {
-  LocalSocket(zmqpp::context &ctx, zmqpp::socket_type type) : zmqpp::socket(ctx, type) {
-    connect("inproc://frontend");
-  }
-  ~LocalSocket() {
-    disconnect("inproc://frontend");
-  }
-};
-
 ## for service in services
 
 ## for call in service.calls
@@ -130,9 +121,7 @@ void {{ service.nameClient }}::makeRequest(
   TRequestVar req,
   TResponsePromiseVar &&resProm
 ) {
-  thread_local LocalSocket socket(_context, zmqpp::socket_type::dealer);
-
-  auto buf = packInt(
+  RpcClientBase::makeRequest(
     nextRequestId(move(resProm), callName),
     RPCType::CLIENT_REQ,
     callName,
@@ -149,11 +138,6 @@ void {{ service.nameClient }}::makeRequest(
 ## endfor
     }, req)
   );
-
-  zmqpp::message msg;
-  msg << "";
-  msg << buf;
-  socket.send(msg);
 }
 
 ## endfor

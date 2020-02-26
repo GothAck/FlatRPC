@@ -13,6 +13,15 @@ inline bool coinflip(float occ) {
   return rand() < (RAND_MAX * occ);
 }
 
+struct LocalSocket : zmqpp::socket {
+  LocalSocket(zmqpp::context &ctx, zmqpp::socket_type type) : zmqpp::socket(ctx, type) {
+    connect("inproc://frontend");
+  }
+  ~LocalSocket() {
+    disconnect("inproc://frontend");
+  }
+};
+
 RpcClientBase::RpcClientBase(zmqpp::context &ctx) :
   RpcBase(ctx, zmqpp::socket_type::dealer)
   {}
