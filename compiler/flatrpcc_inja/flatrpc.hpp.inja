@@ -92,13 +92,12 @@ class {{ service.nameClient }} : public {{ service.local }}Base, public RpcClien
 public:
   using RpcClientBase::RpcClientBase;
 ## for call in service.calls
-## if existsIn(call.attributes, "client_args")
+## if existsIn(call.attributes, "client_argss")
   std::future<{{ call.response.local }}TPtr> {{ call.name }}(
     {{ call.request.local }}TPtr &&req
   );
-## else
-  std::future<{{ call.response.local }}TPtr> {{ call.name }}({{ call.request.local }}TPtr &&req);
 ## endif
+  std::future<{{ call.response.local }}TPtr> {{ call.name }}({{ call.request.local }}TPtr &&req);
 ## endfor
 
 private:
@@ -176,3 +175,8 @@ public:
 };
 
 ## endfor
+
+
+/*
+{{ objects }}
+*/

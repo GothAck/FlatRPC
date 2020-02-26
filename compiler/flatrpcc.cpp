@@ -26,6 +26,49 @@ using json = nlohmann::json;
 using namespace std;
 namespace fs = std::filesystem;
 
+array<string, 18> baseTypeNames = {
+  "None",
+  "UType",
+  "Bool",
+  "Byte",
+  "UByte",
+  "Short",
+  "UShort",
+  "Int",
+  "UInt",
+  "Long",
+  "ULong",
+  "Float",
+  "Double",
+  "String",
+  "Vector",
+  "Obj",     // Used for tables & structs.
+  "Union",
+  "Array"
+};
+
+// Simple types only at the moment
+array<string, 18> baseTypeEquivalents = {
+  "",
+  "",
+  "bool",
+  "char",
+  "unsigned char",
+  "short",
+  "unsigned short",
+  "int",
+  "unsigned int",
+  "long",
+  "unsigned long",
+  "float",
+  "double",
+  "std::string",
+  "", // "std::vector<[ELEMENT]>",
+  "",     // Used for tables & structs.
+  "",
+  "", // "std::array<[ELEMENT], [FIXED_LENGTH]>"
+};
+
 static const char USAGE[] =
 R"(Flatrpc service generator
 
@@ -109,6 +152,52 @@ int main(int argc, char *argv[]) {
     schemaData["filename"] = fileName.stem().string();
     schemaData["services"] = json::array();
     schemaData["flatrpc_gitrev"] = flatrpc_gitrev;
+    schemaData["objects"] = json();
+
+    for (auto object : schema->objects) {
+      json objectData;
+      json requestsData;
+      json responsesData;
+      objectData["name"] = object->name;
+      objectData["local"] = denamespace(object->name);
+      objectData["fields"] = json::array();
+
+      bool simple = true;
+
+      for (auto field : object->fields) {
+        auto name = field->name;
+        auto type = field->type;
+        map<string, string> attributes;
+
+        for (auto &kv : field->attributes) {
+          attributes[kv->key] = kv->value;
+        }
+
+        auto obj = json::object();
+        obj["name"] = name;
+        obj["base_type"] = baseTypeNames[static_cast<size_t>(type->base_type)];
+        obj["element"] = baseTypeNames[static_cast<size_t>(type->element)];
+        obj["index"] = type->index;
+        obj["fixed_length"] = type->fixed_length;
+
+        if (baseTypeEquivalents[static_cast<size_t>(type->base_type)] == "")
+          simple = false;
+
+        if (
+          baseTypeNames[static_cast<size_t>(type->element)] != "None" &&
+          baseTypeEquivalents[static_cast<size_t>(type->element)] == ""
+        )
+          simple = false;
+
+        obj["local"] = denamespace(name);
+        obj["attributes"] = attributes;
+
+        objectData["fields"].push_back(obj);
+      }
+
+      objectData["simple"] = simple;
+      schemaData["objects"][object->name] = objectData;
+    }
 
     for (auto service : schema->services) {
       json serviceData;
