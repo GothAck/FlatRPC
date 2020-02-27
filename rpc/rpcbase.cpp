@@ -131,9 +131,9 @@ RpcBase::TIntNativePtr RpcBase::makeReply(TIntNativePtr req) {
   auto rep = make_shared<TIntNative>();
   rep->requestId = req->requestId;
   switch(req->type) {
-    case quteos::rpc::RPCType::CLIENT_REQ:
-    case quteos::rpc::RPCType::SERVER_REQ:
-      rep->type = static_cast<quteos::rpc::RPCType>(
+    case flatrpc::rpc::RPCType::CLIENT_REQ:
+    case flatrpc::rpc::RPCType::SERVER_REQ:
+      rep->type = static_cast<flatrpc::rpc::RPCType>(
         static_cast<uint8_t>(req->type) << 1);
       break;
     default:

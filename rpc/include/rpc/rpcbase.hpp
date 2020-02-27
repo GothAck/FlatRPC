@@ -30,7 +30,7 @@ class RpcBase : public RpcSockets, public virtual RpcRunnable {
 protected:
   RpcBase(zmqpp::context &ctx, zmqpp::socket_type type);
 
-  using TIntRpc = quteos::rpc::RPC;
+  using TIntRpc = flatrpc::rpc::RPC;
   using TIntBuilder = typename TIntRpc::Builder;
   using TIntNative = typename TIntRpc::NativeTableType;
   using TIntExceptionPtr = typeof(TIntNative::exception);

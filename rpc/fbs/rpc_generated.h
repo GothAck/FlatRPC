@@ -6,7 +6,7 @@
 
 #include "flatbuffers/flatbuffers.h"
 
-namespace quteos {
+namespace flatrpc {
 namespace rpc {
 
 struct Exception;
@@ -72,7 +72,7 @@ inline const char *EnumNameRPCType(RPCType e) {
 struct ExceptionT : public flatbuffers::NativeTable {
   typedef Exception TableType;
   static FLATBUFFERS_CONSTEXPR const char *GetFullyQualifiedName() {
-    return "quteos.rpc.ExceptionT";
+    return "flatrpc.rpc.ExceptionT";
   }
   std::string what;
   ExceptionT() {
@@ -97,7 +97,7 @@ struct Exception FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return ExceptionTypeTable();
   }
   static FLATBUFFERS_CONSTEXPR const char *GetFullyQualifiedName() {
-    return "quteos.rpc.Exception";
+    return "flatrpc.rpc.Exception";
   }
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_WHAT = 4
@@ -155,7 +155,7 @@ inline flatbuffers::Offset<Exception> CreateExceptionDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *what = nullptr) {
   auto what__ = what ? _fbb.CreateString(what) : 0;
-  return quteos::rpc::CreateException(
+  return flatrpc::rpc::CreateException(
       _fbb,
       what__);
 }
@@ -165,16 +165,16 @@ flatbuffers::Offset<Exception> CreateException(flatbuffers::FlatBufferBuilder &_
 struct RPCT : public flatbuffers::NativeTable {
   typedef RPC TableType;
   static FLATBUFFERS_CONSTEXPR const char *GetFullyQualifiedName() {
-    return "quteos.rpc.RPCT";
+    return "flatrpc.rpc.RPCT";
   }
   uint64_t requestId;
-  quteos::rpc::RPCType type;
+  flatrpc::rpc::RPCType type;
   std::string name;
   std::vector<int8_t> data;
-  std::shared_ptr<quteos::rpc::ExceptionT> exception;
+  std::shared_ptr<flatrpc::rpc::ExceptionT> exception;
   RPCT()
       : requestId(0),
-        type(quteos::rpc::RPCType::UNKNOWN) {
+        type(flatrpc::rpc::RPCType::UNKNOWN) {
   }
 };
 
@@ -200,7 +200,7 @@ struct RPC FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return RPCTypeTable();
   }
   static FLATBUFFERS_CONSTEXPR const char *GetFullyQualifiedName() {
-    return "quteos.rpc.RPC";
+    return "flatrpc.rpc.RPC";
   }
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_REQUESTID = 4,
@@ -215,10 +215,10 @@ struct RPC FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_requestId(uint64_t _requestId) {
     return SetField<uint64_t>(VT_REQUESTID, _requestId, 0);
   }
-  quteos::rpc::RPCType type() const {
-    return static_cast<quteos::rpc::RPCType>(GetField<int8_t>(VT_TYPE, 0));
+  flatrpc::rpc::RPCType type() const {
+    return static_cast<flatrpc::rpc::RPCType>(GetField<int8_t>(VT_TYPE, 0));
   }
-  bool mutate_type(quteos::rpc::RPCType _type) {
+  bool mutate_type(flatrpc::rpc::RPCType _type) {
     return SetField<int8_t>(VT_TYPE, static_cast<int8_t>(_type), 0);
   }
   const flatbuffers::String *name() const {
@@ -233,11 +233,11 @@ struct RPC FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   flatbuffers::Vector<int8_t> *mutable_data() {
     return GetPointer<flatbuffers::Vector<int8_t> *>(VT_DATA);
   }
-  const quteos::rpc::Exception *exception() const {
-    return GetPointer<const quteos::rpc::Exception *>(VT_EXCEPTION);
+  const flatrpc::rpc::Exception *exception() const {
+    return GetPointer<const flatrpc::rpc::Exception *>(VT_EXCEPTION);
   }
-  quteos::rpc::Exception *mutable_exception() {
-    return GetPointer<quteos::rpc::Exception *>(VT_EXCEPTION);
+  flatrpc::rpc::Exception *mutable_exception() {
+    return GetPointer<flatrpc::rpc::Exception *>(VT_EXCEPTION);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -263,7 +263,7 @@ struct RPCBuilder {
   void add_requestId(uint64_t requestId) {
     fbb_.AddElement<uint64_t>(RPC::VT_REQUESTID, requestId, 0);
   }
-  void add_type(quteos::rpc::RPCType type) {
+  void add_type(flatrpc::rpc::RPCType type) {
     fbb_.AddElement<int8_t>(RPC::VT_TYPE, static_cast<int8_t>(type), 0);
   }
   void add_name(flatbuffers::Offset<flatbuffers::String> name) {
@@ -272,7 +272,7 @@ struct RPCBuilder {
   void add_data(flatbuffers::Offset<flatbuffers::Vector<int8_t>> data) {
     fbb_.AddOffset(RPC::VT_DATA, data);
   }
-  void add_exception(flatbuffers::Offset<quteos::rpc::Exception> exception) {
+  void add_exception(flatbuffers::Offset<flatrpc::rpc::Exception> exception) {
     fbb_.AddOffset(RPC::VT_EXCEPTION, exception);
   }
   explicit RPCBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -290,10 +290,10 @@ struct RPCBuilder {
 inline flatbuffers::Offset<RPC> CreateRPC(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint64_t requestId = 0,
-    quteos::rpc::RPCType type = quteos::rpc::RPCType::UNKNOWN,
+    flatrpc::rpc::RPCType type = flatrpc::rpc::RPCType::UNKNOWN,
     flatbuffers::Offset<flatbuffers::String> name = 0,
     flatbuffers::Offset<flatbuffers::Vector<int8_t>> data = 0,
-    flatbuffers::Offset<quteos::rpc::Exception> exception = 0) {
+    flatbuffers::Offset<flatrpc::rpc::Exception> exception = 0) {
   RPCBuilder builder_(_fbb);
   builder_.add_requestId(requestId);
   builder_.add_exception(exception);
@@ -311,13 +311,13 @@ struct RPC::Traits {
 inline flatbuffers::Offset<RPC> CreateRPCDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint64_t requestId = 0,
-    quteos::rpc::RPCType type = quteos::rpc::RPCType::UNKNOWN,
+    flatrpc::rpc::RPCType type = flatrpc::rpc::RPCType::UNKNOWN,
     const char *name = nullptr,
     const std::vector<int8_t> *data = nullptr,
-    flatbuffers::Offset<quteos::rpc::Exception> exception = 0) {
+    flatbuffers::Offset<flatrpc::rpc::Exception> exception = 0) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto data__ = data ? _fbb.CreateVector<int8_t>(*data) : 0;
-  return quteos::rpc::CreateRPC(
+  return flatrpc::rpc::CreateRPC(
       _fbb,
       requestId,
       type,
@@ -349,7 +349,7 @@ inline flatbuffers::Offset<Exception> CreateException(flatbuffers::FlatBufferBui
   (void)_o;
   struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const ExceptionT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _what = _o->what.empty() ? 0 : _fbb.CreateString(_o->what);
-  return quteos::rpc::CreateException(
+  return flatrpc::rpc::CreateException(
       _fbb,
       _what);
 }
@@ -367,7 +367,7 @@ inline void RPC::UnPackTo(RPCT *_o, const flatbuffers::resolver_function_t *_res
   { auto _e = type(); _o->type = _e; }
   { auto _e = name(); if (_e) _o->name = _e->str(); }
   { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } }
-  { auto _e = exception(); if (_e) _o->exception = std::shared_ptr<quteos::rpc::ExceptionT>(_e->UnPack(_resolver)); }
+  { auto _e = exception(); if (_e) _o->exception = std::shared_ptr<flatrpc::rpc::ExceptionT>(_e->UnPack(_resolver)); }
 }
 
 inline flatbuffers::Offset<RPC> RPC::Pack(flatbuffers::FlatBufferBuilder &_fbb, const RPCT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -383,7 +383,7 @@ inline flatbuffers::Offset<RPC> CreateRPC(flatbuffers::FlatBufferBuilder &_fbb, 
   auto _name = _o->name.empty() ? 0 : _fbb.CreateString(_o->name);
   auto _data = _o->data.size() ? _fbb.CreateVector(_o->data) : 0;
   auto _exception = _o->exception ? CreateException(_fbb, _o->exception.get(), _rehasher) : 0;
-  return quteos::rpc::CreateRPC(
+  return flatrpc::rpc::CreateRPC(
       _fbb,
       _requestId,
       _type,
@@ -401,7 +401,7 @@ inline const flatbuffers::TypeTable *RPCTypeTypeTable() {
     { flatbuffers::ET_CHAR, 0, 0 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
-    quteos::rpc::RPCTypeTypeTable
+    flatrpc::rpc::RPCTypeTypeTable
   };
   static const int64_t values[] = { 0, 1, 2, 4, 8 };
   static const char * const names[] = {
@@ -439,8 +439,8 @@ inline const flatbuffers::TypeTable *RPCTypeTable() {
     { flatbuffers::ET_SEQUENCE, 0, 1 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
-    quteos::rpc::RPCTypeTypeTable,
-    quteos::rpc::ExceptionTypeTable
+    flatrpc::rpc::RPCTypeTypeTable,
+    flatrpc::rpc::ExceptionTypeTable
   };
   static const char * const names[] = {
     "requestId",
@@ -456,6 +456,6 @@ inline const flatbuffers::TypeTable *RPCTypeTable() {
 }
 
 }  // namespace rpc
-}  // namespace quteos
+}  // namespace flatrpc
 
 #endif  // FLATBUFFERS_GENERATED_RPC_QUTEOS_RPC_H_

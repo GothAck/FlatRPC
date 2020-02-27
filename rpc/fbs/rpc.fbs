@@ -1,4 +1,4 @@
-namespace quteos.rpc;
+namespace flatrpc.rpc;
 
 table Exception {
     what: string;

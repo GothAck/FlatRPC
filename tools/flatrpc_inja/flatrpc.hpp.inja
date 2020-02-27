@@ -161,7 +161,7 @@ protected:
         throw exception("Unknown request name");
       }
     } catch (std::exception &e) {
-      repInt->exception = std::make_shared<quteos::rpc::ExceptionT>();
+      repInt->exception = std::make_shared<flatrpc::rpc::ExceptionT>();
       repInt->exception->what = e.what();
     }
 
