@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 add_subdirectory(vendor)
 add_subdirectory(rpc)
-add_subdirectory(tools)
+add_subdirectory(compiler)
 
 export(TARGETS flatrpc plog rpc_fbs flatrpcc NAMESPACE FlatRPC:: FILE FlatRPCTargets.cmake)
 

@@ -5,12 +5,12 @@ include(flatbuf)
 
 add_subdirectory(../../rpc rpc)
 add_subdirectory(../../vendor vendor)
-add_subdirectory(../../tools tools)
+add_subdirectory(../../compiler compiler)
 
 build_flatbuf(simple.fbs)
 
 add_custom_command(OUTPUT simple_flatrpc.hpp simple_flatrpc.cpp
-  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/tools/flatrpcc ${CMAKE_CURRENT_SOURCE_DIR}/simple.fbs
+  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/compiler/flatrpcc ${CMAKE_CURRENT_SOURCE_DIR}/simple.fbs
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/simple.fbs flatrpcc
   )
 
