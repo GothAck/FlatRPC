@@ -5,8 +5,8 @@
 #include <frozen/unordered_map.h>
 #include <frozen/string.h>
 
-#include <rpc/rpcserverbase.hpp>
-#include <rpc/rpcclientbase.hpp>
+#include <flatrpc/rpcserverbase.hpp>
+#include <flatrpc/rpcclientbase.hpp>
 
 #include "{{ filename }}_generated.h"
 

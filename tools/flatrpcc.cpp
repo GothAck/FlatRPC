@@ -14,8 +14,8 @@ using namespace inja;
 using json = nlohmann::json;
 
 #include "reflection_generated.h"
-#include "flatrpc_inja/flatrpc.hpp.inja.h"
-#include "flatrpc_inja/flatrpc.cpp.inja.h"
+#include "flatrpcc_inja/flatrpc.hpp.inja.h"
+#include "flatrpcc_inja/flatrpc.cpp.inja.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -33,8 +33,8 @@ R"(Flatrpc service generator
       -h --help                 Show this screen.
 )";
 
-const string flatrpc_hpp_inja_tmpl(flatrpc_inja_flatrpc_hpp_inja, flatrpc_inja_flatrpc_hpp_inja + flatrpc_inja_flatrpc_hpp_inja_len);
-const string flatrpc_cpp_inja_tmpl(flatrpc_inja_flatrpc_cpp_inja, flatrpc_inja_flatrpc_cpp_inja + flatrpc_inja_flatrpc_cpp_inja_len);
+const string flatrpc_hpp_inja_tmpl(flatrpcc_inja_flatrpc_hpp_inja, flatrpcc_inja_flatrpc_hpp_inja + flatrpcc_inja_flatrpc_hpp_inja_len);
+const string flatrpc_cpp_inja_tmpl(flatrpcc_inja_flatrpc_cpp_inja, flatrpcc_inja_flatrpc_cpp_inja + flatrpcc_inja_flatrpc_cpp_inja_len);
 
 string tmpPath = fs::temp_directory_path() / "flatrpc-XXXXXX";
 
