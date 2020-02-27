@@ -1,3 +1,5 @@
+include(GNUInstallDirs)
+
 add_subdirectory(fbs)
 
 add_library(flatrpc
