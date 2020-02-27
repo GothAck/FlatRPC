@@ -32,12 +32,12 @@ public:
 
   using TRequestVar = std::variant<
 ## for request in service.requests
-    {{ request.local }}TPtr
+    {{ request.local }}TPtr{% if not loop/is_last %},{% endif %}
 ## endfor
   >;
   using TResponseVar = std::variant<
 ## for response in service.responses
-    {{ response.local }}TPtr
+    {{ response.local }}TPtr{% if not loop/is_last %},{% endif %}
 ## endfor
   >;
 
