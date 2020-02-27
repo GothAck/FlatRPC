@@ -1,8 +1,6 @@
-project(rpc)
-
 add_subdirectory(fbs)
 
-add_library(rpc
+add_library(flatrpc
   STATIC
   rpcbase.cpp
   rpcclient.cpp
@@ -11,8 +9,8 @@ add_library(rpc
   rpcrunnable.cpp
 )
 
-set_property(TARGET rpc PROPERTY CXX_STANDARD 20)
+set_property(TARGET flatrpc PROPERTY CXX_STANDARD 20)
 
-target_link_libraries(rpc plog rpc_fbs flatbuffers zmqpp zmq uuid pthread)
+target_link_libraries(flatrpc plog rpc_fbs flatbuffers zmqpp zmq uuid pthread)
 
-target_include_directories(rpc PUBLIC include PRIVATE include/rpc)
+target_include_directories(flatrpc PUBLIC include PRIVATE include/rpc)

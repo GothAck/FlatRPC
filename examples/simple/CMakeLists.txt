@@ -10,16 +10,16 @@ add_subdirectory(../../tools tools)
 build_flatbuf(simple.fbs)
 
 add_custom_command(OUTPUT simple_flatrpc.hpp simple_flatrpc.cpp
-  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/tools/flatrpc ${CMAKE_CURRENT_SOURCE_DIR}/simple.fbs
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/simple.fbs flatrpc
+  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/tools/flatrpcc ${CMAKE_CURRENT_SOURCE_DIR}/simple.fbs
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/simple.fbs flatrpcc
   )
 
 add_executable(server server.cpp greeter_server.cpp simple_flatrpc.cpp simple_flatrpc.hpp)
 set_property(TARGET server PROPERTY CXX_STANDARD 20)
-target_link_libraries(server frozen rpc flatbuffers)
+target_link_libraries(server frozen flatrpc flatbuffers)
 target_include_directories(server PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(client client.cpp simple_flatrpc.cpp simple_flatrpc.hpp)
 set_property(TARGET client PROPERTY CXX_STANDARD 20)
-target_link_libraries(client frozen rpc flatbuffers)
+target_link_libraries(client frozen flatrpc flatbuffers)
 target_include_directories(client PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
