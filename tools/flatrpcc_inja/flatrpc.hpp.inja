@@ -80,7 +80,7 @@ protected:
 class {{ service.nameClient }} : public {{ service.local }}Base, public RpcClientBase {
   using TResponsePromiseVar = std::variant<
 ## for response in service.responses
-    {{ response.local }}TPromise
+    {{ response.local }}TPromise{% if not loop/is_last %},{% endif %}
 ## endfor
   >;
 
