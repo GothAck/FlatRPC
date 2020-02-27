@@ -15,7 +15,7 @@ target_link_libraries(flatrpc plog rpc_fbs flatbuffers zmqpp zmq uuid pthread)
 
 target_include_directories(flatrpc PUBLIC include PRIVATE include/flatrpc)
 
-install(DIRECTORY include/flatrpc DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY include/flatrpc DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h*")
 
 install(
   TARGETS flatrpc
