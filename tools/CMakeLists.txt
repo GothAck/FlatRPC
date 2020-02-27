@@ -1,6 +1,8 @@
 include(flatbuf)
 include(inja)
 
+include(GNUInstallDirs)
+
 build_flatbuf(reflection.fbs)
 
 gen_inja_h(
@@ -17,3 +19,8 @@ set_property(TARGET flatrpc PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(flatrpc docopt inja)
 
+install(
+  TARGETS flatrpc
+  RUNTIME DESTINATION
+  ${CMAKE_INSTALL_BINDIR}
+)
