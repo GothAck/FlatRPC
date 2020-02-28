@@ -7,8 +7,13 @@
 
 #include <flatrpc/rpcserverbase.hpp>
 #include <flatrpc/rpcclientbase.hpp>
+#include <flatrpc/rpcversion.hpp>
 
 #include "{{ filename }}_generated.h"
+
+#if FLATRPC_GITREV != {{ flatrpc_gitrev }}
+#warning "flatrpcc and installed headers are built from different versions"
+#endif
 
 #pragma once
 

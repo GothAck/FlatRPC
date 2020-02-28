@@ -17,6 +17,8 @@ using json = nlohmann::json;
 #include "flatrpcc_inja/flatrpc.hpp.inja.h"
 #include "flatrpcc_inja/flatrpc.cpp.inja.h"
 
+#include "flatrpc/rpcversion.hpp"
+
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -35,6 +37,8 @@ R"(Flatrpc service generator
 
 const string flatrpc_hpp_inja_tmpl(flatrpcc_inja_flatrpc_hpp_inja, flatrpcc_inja_flatrpc_hpp_inja + flatrpcc_inja_flatrpc_hpp_inja_len);
 const string flatrpc_cpp_inja_tmpl(flatrpcc_inja_flatrpc_cpp_inja, flatrpcc_inja_flatrpc_cpp_inja + flatrpcc_inja_flatrpc_cpp_inja_len);
+
+const string flatrpc_gitrev(to_string(FLATRPC_GITREV));
 
 string tmpPath = fs::temp_directory_path() / "flatrpc-XXXXXX";
 
@@ -100,6 +104,7 @@ int main(int argc, char *argv[]) {
   {
     schemaData["filename"] = fileName.stem().string();
     schemaData["services"] = json::array();
+    schemaData["flatrpc_gitrev"] = flatrpc_gitrev;
 
     for (auto service : schema->services) {
       json serviceData;
