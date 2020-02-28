@@ -92,9 +92,11 @@ class {{ service.nameClient }} : public {{ service.local }}Base, public RpcClien
 public:
   using RpcClientBase::RpcClientBase;
 ## for call in service.calls
-## if existsIn(call.attributes, "client_argss")
+## if call.request.object.simple
   std::future<{{ call.response.local }}TPtr> {{ call.name }}(
-    {{ call.request.local }}TPtr &&req
+## for field in call.request.object.fields
+    {{ field.base_type_equivalent }} {{ field.name }}{% if not loop/is_last %},{% endif %}
+## endfor
   );
 ## endif
   std::future<{{ call.response.local }}TPtr> {{ call.name }}({{ call.request.local }}TPtr &&req);

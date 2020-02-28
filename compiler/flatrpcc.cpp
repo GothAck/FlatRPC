@@ -160,6 +160,7 @@ int main(int argc, char *argv[]) {
       json responsesData;
       objectData["name"] = object->name;
       objectData["local"] = denamespace(object->name);
+      objectData["cpp"] = cppnamespace(object->name);
       objectData["fields"] = json::array();
 
       bool simple = true;
@@ -175,8 +176,12 @@ int main(int argc, char *argv[]) {
 
         auto obj = json::object();
         obj["name"] = name;
+        obj["local"] = denamespace(name);
+        obj["cpp"] = cppnamespace(name);
         obj["base_type"] = baseTypeNames[static_cast<size_t>(type->base_type)];
+        obj["base_type_equivalent"] = baseTypeEquivalents[static_cast<size_t>(type->base_type)];
         obj["element"] = baseTypeNames[static_cast<size_t>(type->element)];
+        obj["element_equivalent"] = baseTypeEquivalents[static_cast<size_t>(type->element)];
         obj["index"] = type->index;
         obj["fixed_length"] = type->fixed_length;
 
@@ -250,6 +255,9 @@ int main(int argc, char *argv[]) {
         } else {
           obj["response"] = responsesData[response];
         }
+
+        obj["request"]["object"] = schemaData["objects"][request];
+        obj["response"]["object"] = schemaData["objects"][response];
 
         serviceData["calls"].push_back(obj);
       }

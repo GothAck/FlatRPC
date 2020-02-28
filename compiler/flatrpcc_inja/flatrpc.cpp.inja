@@ -9,6 +9,35 @@ template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 ## for service in services
 
 ## for call in service.calls
+## if call.request.object.simple
+std::future<{{ service.nameClient }}::{{ call.response.local }}TPtr>
+{{ service.nameClient }}::{{ call.name }}(
+## for field in call.request.object.fields
+  {{ field.base_type_equivalent }} {{ field.name }}{% if not loop/is_last %},{% endif %}
+## endfor
+) {
+  promise<{{ call.response.local }}TPtr> prom;
+  auto fut = prom.get_future();
+  flatbuffers::FlatBufferBuilder fbb;
+  {{ call.request.cpp }}Builder builder(fbb);
+
+## for field in call.request.object.fields
+  builder.add_{{ field.name }}(fbb.Create{{ field.base_type }}(name));
+## endfor
+
+  fbb.Finish(builder.Finish());
+
+  RpcClientBase::makeRequest(
+    nextRequestId(move(prom), "{{ call.name }}"),
+    RPCType::CLIENT_REQ,
+    "{{ call.name }}",
+    {fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize()}
+  );
+
+  return fut;
+}
+## endif
+
 future<{{ service.nameClient }}::{{ call.response.local }}TPtr>
 {{ service.nameClient }}::{{ call.local }}(
   {{ call.request.local }}TPtr &&req
