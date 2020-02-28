@@ -15,9 +15,12 @@ add_executable(flatrpcc
   flatrpcc_inja/flatrpc.hpp.inja.h
   flatrpcc_inja/flatrpc.cpp.inja.h
 )
+
 set_property(TARGET flatrpcc PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(flatrpcc docopt inja)
+
+target_include_directories(flatrpcc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 install(
   TARGETS flatrpcc
