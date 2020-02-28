@@ -115,7 +115,7 @@ private:
 
 /* ServerBase */
 
-class {{ service.nameServer }}Base : public {{ service.local }}Base, public RpcServerBase {
+class {{ service.nameServer }} : public {{ service.local }}Base, public RpcServerBase {
 public:
   using RpcServerBase::RpcServerBase;
 private:

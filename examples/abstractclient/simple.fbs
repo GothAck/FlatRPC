@@ -1,0 +1,15 @@
+namespace examples.simple;
+
+attribute "abstract_client";
+
+table HelloReply {
+  message: string;
+}
+
+table HelloRequest {
+  name: string;
+}
+
+rpc_service Greeter (abstract_client) {
+  SayHello(HelloRequest): HelloReply;
+}

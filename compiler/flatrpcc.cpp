@@ -110,11 +110,17 @@ int main(int argc, char *argv[]) {
       json serviceData;
       json requestsData;
       json responsesData;
+      bool abstractClient = false;
+      for (auto &kv : service->attributes) {
+        if (kv->key == "abstract_client") {
+          abstractClient = true;
+        }
+      }
       serviceData["filename"] = fileName.stem().string();
       serviceData["name"] = service->name;
       serviceData["local"] = denamespace(service->name);
-      serviceData["nameClient"] = denamespace(service->name) + "Client";
-      serviceData["nameServer"] = denamespace(service->name) + "Server";
+      serviceData["nameClient"] = denamespace(service->name) + "Client" + (abstractClient ? "Base" : "");
+      serviceData["nameServer"] = denamespace(service->name) + "ServerBase";
       serviceData["calls"] = json::array();
       serviceData["requests"] = json::array();
       serviceData["responses"] = json::array();
