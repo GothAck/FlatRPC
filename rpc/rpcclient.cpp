@@ -49,7 +49,9 @@ void RpcClientBase::workerThread() {
     backend.receive(msg);
     auto routing = getRouting(msg);
     msg >> buf;
-    handleResponse(move(buf));
+
+    vector<unsigned char> bufVec(buf.data(), buf.data() + buf.size());
+    handleResponse(move(bufVec));
   });
 
   while (running.load()) {
@@ -74,7 +76,8 @@ void RpcClientBase::workerThread() {
 void RpcClientBase::makeRequest(uint64_t requestId, flatrpc::rpc::RPCType type, string callName, std::vector<signed char> req) {
   thread_local LocalSocket socket(_context, zmqpp::socket_type::dealer);
 
-  auto buf = packInt(requestId, type, callName, req);
+  auto bufVec = packInt(requestId, type, callName, req);
+  string buf(bufVec.data(), bufVec.data() + bufVec.size());
 
   zmqpp::message msg;
   msg << "";

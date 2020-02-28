@@ -63,10 +63,11 @@ protected:
   void joinReactor();
   virtual void workerThread() = 0;
 
-  TIntNativePtr unpackInt(std::string &&data);
+  TIntNativePtr unpackInt(const std::vector<unsigned char> &&data);
+  const TIntRpc *unpackInt(const std::vector<unsigned char> &data);
 
-  std::string packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::vector<signed char> data);
-  std::string packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::exception &exception);
+  std::vector<unsigned char> packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::vector<signed char> data);
+  std::vector<unsigned char> packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::exception &exception);
 
   flatrpc::rpc::RPCType getReplyType(flatrpc::rpc::RPCType type);
   TIntNativePtr makeReply(TIntNativePtr req);

@@ -106,20 +106,30 @@ void RpcBase::run(size_t workers) {
   }
 }
 
-RpcBase::TIntNativePtr RpcBase::unpackInt(std::string &&data) {
+RpcBase::TIntNativePtr RpcBase::unpackInt(const vector<unsigned char> &&data) {
   TIntNativePtr ptr;
-  flatbuffers::Verifier verifier((uint8_t *)data.data(), data.size());
+  const RpcBase::TIntRpc *rpc = unpackInt(data);
 
-  if (!verifier.VerifyBuffer<TIntRpc>(nullptr)) {
+  if (!rpc) {
     PLOG_ERROR << "Error verifying buffer";
     return ptr;
   }
 
-  auto rpc = flatbuffers::GetRoot<TIntRpc>(data.data());
-  ptr = std::make_shared<TIntNative>();
+  ptr = make_shared<TIntNative>();
   rpc->UnPackTo(ptr.get());
 
   return ptr;
+}
+
+const RpcBase::TIntRpc *RpcBase::unpackInt(const vector<unsigned char> &data) {
+  flatbuffers::Verifier verifier((uint8_t *)data.data(), data.size());
+
+  if (!verifier.VerifyBuffer<TIntRpc>(nullptr)) {
+    PLOG_ERROR << "Error verifying buffer";
+    return nullptr;
+  }
+
+  return flatbuffers::GetRoot<TIntRpc>(data.data());
 }
 
 flatrpc::rpc::RPCType RpcBase::getReplyType(flatrpc::rpc::RPCType type) {
@@ -156,7 +166,7 @@ void RpcBase::joinReactor() {
   _reactorThread.join();
 }
 
-std::string RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::vector<signed char> data) {
+vector<unsigned char> RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const string& name, vector<signed char> data) {
   FlatBufferBuilder fbb;
   auto fbbName = fbb.CreateString(name);
   auto fbbData = fbb.CreateVector<int8_t>(data);
@@ -167,7 +177,7 @@ std::string RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, con
   return {fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize()};
 }
 
-std::string RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::exception &exception) {
+vector<unsigned char> RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const string& name, std::exception &exception) {
   FlatBufferBuilder fbb;
   auto fbbName = fbb.CreateString(name);
   auto fbbWhat = fbb.CreateString(exception.what());

@@ -37,7 +37,7 @@ void {{ service.nameClient }}::timeoutRequest(uint64_t requestId) {
   _requestTimes.erase(requestId);
 }
 
-void {{ service.nameClient }}::handleResponse(TData &&response) {
+void {{ service.nameClient }}::handleResponse(vector<unsigned char> &&response) {
   auto nativeRes = unpackInt(move(response));
   auto requestId = nativeRes->requestId;
   TResponsePromiseVar resPromiseVar;

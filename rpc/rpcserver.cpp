@@ -34,7 +34,11 @@ void RpcServerBase::workerThread() {
     assert(msg.parts() == 1);
     msg >> buf; // Read message from buffer
 
-    auto rep = handleRequest(move(buf), routing);
+    vector<unsigned char> bufVec(buf.data(), buf.data() + buf.size());
+
+    auto repVec = handleRequest(move(bufVec), routing);
+
+    string rep(repVec.data(), repVec.data() + repVec.size());
 
     message repMsg;
     for (auto &addr : routing) {

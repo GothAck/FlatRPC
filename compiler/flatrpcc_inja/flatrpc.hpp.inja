@@ -103,7 +103,7 @@ public:
 
 private:
   void timeoutRequest(uint64_t requestId) override;
-  void handleResponse(TData &&response) override;
+  void handleResponse(std::vector<unsigned char> &&response) override;
   uint64_t nextRequestId(TResponsePromiseVar &&prom, const std::string &callName);
 
   void makeRequest(std::string callName, TRequestVar, TResponsePromiseVar &&prom);
@@ -150,7 +150,7 @@ private:
     return std::vector<signed char>(fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize());
   }
 protected:
-  std::string handleRequest(std::string &&reqData, const TRouting &routing) {
+  std::vector<unsigned char> handleRequest(std::vector<unsigned char> &&reqData, const TRouting &routing) override {
     auto reqInt = unpackInt(std::move(reqData));
     const auto replyType = getReplyType(reqInt->type);
 

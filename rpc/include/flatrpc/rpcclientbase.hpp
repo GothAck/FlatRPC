@@ -23,7 +23,7 @@ public:
 protected:
   virtual void timeoutRequest(size_t id) = 0;
   void workerThread() override;
-  virtual void handleResponse(TData &&response) = 0;
+  virtual void handleResponse(std::vector<unsigned char> &&response) = 0;
 
   void makeRequest(uint64_t requestId, flatrpc::rpc::RPCType type, std::string callName, std::vector<signed char> req);
 
