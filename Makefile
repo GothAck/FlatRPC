@@ -6,6 +6,9 @@ all: ./build
 ./build:
 	@mkdir -p $@
 
+install: all
+	@$(MAKE) -C ./build install
+
 test: ./build
 	@cmake -S . -B ./build
 	@$(MAKE) -C ./build test
