@@ -16,7 +16,7 @@ Probably, feel free to contribute, I just need C++ though.
 Sure, can I give it a raw socket and make it dance in < 10 minutes?
 
 ### Documentation?
-Coming, but for now please check out the example in the examples directory.
+Coming, but for now please check out the example in the examples directory and my hasilty written [Quick Start](https://github.com/GothAck/FlatRPC/wiki/Quickstart) guide in the wiki
 
 ### TODO:
 - Implement server side timeouts.
