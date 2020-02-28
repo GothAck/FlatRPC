@@ -122,29 +122,22 @@ RpcBase::TIntNativePtr RpcBase::unpackInt(std::string &&data) {
   return ptr;
 }
 
-std::string RpcBase::packInt(RpcBase::TIntNativePtr nativePtr) {
-  flatbuffers::FlatBufferBuilder fbb;
-  flatbuffers::Offset<TIntRpc> rep;
-
-  rep = TIntRpc::Pack(fbb, nativePtr.get());
-  fbb.Finish(rep);
-
-  std::string str(fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize());
-  return str;
+flatrpc::rpc::RPCType RpcBase::getReplyType(flatrpc::rpc::RPCType type) {
+  switch(type) {
+    case flatrpc::rpc::RPCType::CLIENT_REQ:
+    case flatrpc::rpc::RPCType::SERVER_REQ:
+      return static_cast<flatrpc::rpc::RPCType>(
+        static_cast<uint8_t>(type) << 1);
+      break;
+    default:
+      throw exception("Cannot make reply from a reply");
+  }
 }
 
 RpcBase::TIntNativePtr RpcBase::makeReply(TIntNativePtr req) {
   auto rep = make_shared<TIntNative>();
   rep->requestId = req->requestId;
-  switch(req->type) {
-    case flatrpc::rpc::RPCType::CLIENT_REQ:
-    case flatrpc::rpc::RPCType::SERVER_REQ:
-      rep->type = static_cast<flatrpc::rpc::RPCType>(
-        static_cast<uint8_t>(req->type) << 1);
-      break;
-    default:
-      throw exception("Cannot make reply from a reply");
-  }
+  rep->type = getReplyType(req->type);
   rep->name = req->name;
   return rep;
 }

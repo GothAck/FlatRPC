@@ -65,10 +65,10 @@ protected:
 
   TIntNativePtr unpackInt(std::string &&data);
 
-  std::string packInt(TIntNativePtr nativePtr);
   std::string packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::vector<signed char> data);
   std::string packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const std::string& name, std::exception &exception);
 
+  flatrpc::rpc::RPCType getReplyType(flatrpc::rpc::RPCType type);
   TIntNativePtr makeReply(TIntNativePtr req);
 
   zmqpp::context &_context;

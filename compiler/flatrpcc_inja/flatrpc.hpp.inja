@@ -152,25 +152,22 @@ private:
 protected:
   std::string handleRequest(std::string &&reqData, const TRouting &routing) {
     auto reqInt = unpackInt(std::move(reqData));
-    auto repInt = makeReply(reqInt);
+    const auto replyType = getReplyType(reqInt->type);
 
     try {
 ## for call in service.calls
       if (reqInt->name == "{{ call.name }}") {
         auto req = unpack<{{ call.request.cpp }}T>({reqInt->data.data(), reqInt->data.data() + reqInt->data.size()});
         auto rep = handle{{ call.name }}(move(req), routing).get();
-        repInt->data = pack(rep);
+        return packInt(reqInt->requestId, replyType, reqInt->name, pack(rep));
       } else
 ## endfor
       {
         throw exception("Unknown request name");
       }
     } catch (std::exception &e) {
-      repInt->exception = std::make_shared<flatrpc::rpc::ExceptionT>();
-      repInt->exception->what = e.what();
+      return packInt(reqInt->requestId, replyType, reqInt->name, e);
     }
-
-    return packInt(std::move(repInt));
   }
 public:
 ## for call in service.calls
