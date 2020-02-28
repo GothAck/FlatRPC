@@ -115,7 +115,7 @@ int RpcSockets::createSocketListen(SocketType type, const string &addr) {
       return fd;
     }
     case SocketType::VSOCK: {
-      unsigned int port = stoi(addr);
+      unsigned int port = stol(addr);
       struct sockaddr_vm sa_listen = {
         .svm_family = AF_VSOCK,
         .svm_port = port,
@@ -131,6 +131,7 @@ int RpcSockets::createSocketListen(SocketType type, const string &addr) {
         PLOG_ERROR << "Could not bind socket" << errno;
         return -1;
       }
+      PLOG_INFO << "Bound to cid " << sa_listen.svm_cid << " port " << sa_listen.svm_port;
       if (::listen(fd, 1)) {
         PLOG_ERROR << "Could not listen socket" << errno;
         return -1;
@@ -190,8 +191,8 @@ int RpcSockets::createSocketConnect(RpcSockets::SocketType type, const std::stri
         if (!regex_search(addr, sm, colonDelim)) {
           return -1;
         }
-        cid = stoi(sm.prefix());
-        port = stoi(sm.suffix());
+        cid = stol(sm.prefix());
+        port = stol(sm.suffix());
       }
 
       struct sockaddr_vm sa_connect = {
