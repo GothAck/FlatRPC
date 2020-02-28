@@ -4,6 +4,7 @@ add_subdirectory(fbs)
 
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc/rpcversion.hpp
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
   COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc
   COMMAND echo '\#pragma once' > ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc/rpcversion.hpp
   COMMAND echo -n '\#define FLATRPC_GITREV ' >> ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc/rpcversion.hpp
