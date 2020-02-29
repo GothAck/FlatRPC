@@ -1,7 +1,5 @@
 namespace examples.simple;
 
-attribute "client_args";
-
 table HelloReply {
   message: string;
 }
@@ -11,5 +9,5 @@ table HelloRequest {
 }
 
 rpc_service Greeter {
-  SayHello(HelloRequest): HelloReply (client_args);
+  SayHello(HelloRequest): HelloReply;
 }
