@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) Greg "GothAck" Miell <flatrpc@greg.gothack.ninja>
+ * Licensed under the MIT License. See LICENSE file in the project root.
+ */
 #include <iostream>
 
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file

@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) Greg "GothAck" Miell <flatrpc@greg.gothack.ninja>
+ * Licensed under the MIT License. See LICENSE file in the project root.
+ */
 //
 // Created by gothack on 14/02/2020.
 //

@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) Greg "GothAck" Miell <flatrpc@greg.gothack.ninja>
+ * Licensed under the MIT License. See LICENSE file in the project root.
+ */
 #include <plog/Log.h>
 
 #include "rpcbase.hpp"
