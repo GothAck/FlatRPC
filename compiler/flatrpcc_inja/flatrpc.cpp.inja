@@ -22,7 +22,7 @@ std::future<{{ service.nameClient }}::{{ call.response.local }}TPtr>
   {{ call.request.cpp }}Builder builder(fbb);
 
 ## for field in call.request.object.fields
-  builder.add_{{ field.name }}(fbb.Create{{ field.base_type }}(name));
+  builder.add_{{ field.name }}(fbb.Create{{ field.base_type }}({{ field.name }}));
 ## endfor
 
   fbb.Finish(builder.Finish());
