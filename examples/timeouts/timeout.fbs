@@ -9,6 +9,9 @@ table ExpensiveRequest {
   number: uint32;
 }
 
+table Empty {}
+
 rpc_service Expensive {
   ExpensiveMethod(ExpensiveRequest): ExpensiveReply;
+  Quit(Empty): Empty;
 }

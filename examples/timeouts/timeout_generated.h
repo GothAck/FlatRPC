@@ -17,14 +17,22 @@ struct ExpensiveRequest;
 struct ExpensiveRequestBuilder;
 struct ExpensiveRequestT;
 
+struct Empty;
+struct EmptyBuilder;
+struct EmptyT;
+
 bool operator==(const ExpensiveReplyT &lhs, const ExpensiveReplyT &rhs);
 bool operator!=(const ExpensiveReplyT &lhs, const ExpensiveReplyT &rhs);
 bool operator==(const ExpensiveRequestT &lhs, const ExpensiveRequestT &rhs);
 bool operator!=(const ExpensiveRequestT &lhs, const ExpensiveRequestT &rhs);
+bool operator==(const EmptyT &lhs, const EmptyT &rhs);
+bool operator!=(const EmptyT &lhs, const EmptyT &rhs);
 
 inline const flatbuffers::TypeTable *ExpensiveReplyTypeTable();
 
 inline const flatbuffers::TypeTable *ExpensiveRequestTypeTable();
+
+inline const flatbuffers::TypeTable *EmptyTypeTable();
 
 struct ExpensiveReplyT : public flatbuffers::NativeTable {
   typedef ExpensiveReply TableType;
@@ -210,6 +218,72 @@ struct ExpensiveRequest::Traits {
 
 flatbuffers::Offset<ExpensiveRequest> CreateExpensiveRequest(flatbuffers::FlatBufferBuilder &_fbb, const ExpensiveRequestT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
+struct EmptyT : public flatbuffers::NativeTable {
+  typedef Empty TableType;
+  static FLATBUFFERS_CONSTEXPR const char *GetFullyQualifiedName() {
+    return "examples.timeouts.EmptyT";
+  }
+  EmptyT() {
+  }
+};
+
+inline bool operator==(const EmptyT &, const EmptyT &) {
+  return true;
+}
+
+inline bool operator!=(const EmptyT &lhs, const EmptyT &rhs) {
+    return !(lhs == rhs);
+}
+
+
+struct Empty FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef EmptyT NativeTableType;
+  typedef EmptyBuilder Builder;
+  struct Traits;
+  static const flatbuffers::TypeTable *MiniReflectTypeTable() {
+    return EmptyTypeTable();
+  }
+  static FLATBUFFERS_CONSTEXPR const char *GetFullyQualifiedName() {
+    return "examples.timeouts.Empty";
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           verifier.EndTable();
+  }
+  EmptyT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(EmptyT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<Empty> Pack(flatbuffers::FlatBufferBuilder &_fbb, const EmptyT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+};
+
+struct EmptyBuilder {
+  typedef Empty Table;
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  explicit EmptyBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  EmptyBuilder &operator=(const EmptyBuilder &);
+  flatbuffers::Offset<Empty> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<Empty>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<Empty> CreateEmpty(
+    flatbuffers::FlatBufferBuilder &_fbb) {
+  EmptyBuilder builder_(_fbb);
+  return builder_.Finish();
+}
+
+struct Empty::Traits {
+  using type = Empty;
+  static auto constexpr Create = CreateEmpty;
+};
+
+flatbuffers::Offset<Empty> CreateEmpty(flatbuffers::FlatBufferBuilder &_fbb, const EmptyT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
 inline ExpensiveReplyT *ExpensiveReply::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   std::unique_ptr<examples::timeouts::ExpensiveReplyT> _o = std::unique_ptr<examples::timeouts::ExpensiveReplyT>(new ExpensiveReplyT());
   UnPackTo(_o.get(), _resolver);
@@ -265,6 +339,29 @@ inline flatbuffers::Offset<ExpensiveRequest> CreateExpensiveRequest(flatbuffers:
       _number);
 }
 
+inline EmptyT *Empty::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = new EmptyT();
+  UnPackTo(_o, _resolver);
+  return _o;
+}
+
+inline void Empty::UnPackTo(EmptyT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+}
+
+inline flatbuffers::Offset<Empty> Empty::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EmptyT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateEmpty(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<Empty> CreateEmpty(flatbuffers::FlatBufferBuilder &_fbb, const EmptyT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const EmptyT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  return examples::timeouts::CreateEmpty(
+      _fbb);
+}
+
 inline const flatbuffers::TypeTable *ExpensiveReplyTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_UINT, 0, -1 }
@@ -289,6 +386,13 @@ inline const flatbuffers::TypeTable *ExpensiveRequestTypeTable() {
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_TABLE, 2, type_codes, nullptr, nullptr, names
+  };
+  return &tt;
+}
+
+inline const flatbuffers::TypeTable *EmptyTypeTable() {
+  static const flatbuffers::TypeTable tt = {
+    flatbuffers::ST_TABLE, 0, nullptr, nullptr, nullptr, nullptr
   };
   return &tt;
 }

@@ -8,6 +8,9 @@ table HelloRequest {
   name: string;
 }
 
+table Empty {}
+
 rpc_service Greeter {
   SayHello(HelloRequest): HelloReply;
+  Quit(Empty): Empty;
 }
