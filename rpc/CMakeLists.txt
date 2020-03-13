@@ -23,17 +23,35 @@ add_library(flatrpc
   ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc/rpcversion.hpp
 )
 
+add_library(flatrpc-static
+  STATIC
+  rpcbase.cpp
+  rpcclient.cpp
+  rpcserver.cpp
+  rpcsockets.cpp
+  rpcrunnable.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc/rpcversion.hpp
+)
+
 set_property(TARGET flatrpc PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(flatrpc plog rpc_fbs flatbuffers zmqpp zmq uuid pthread)
 
 target_include_directories(flatrpc PUBLIC include ${CMAKE_CURRENT_BINARY_DIR}/include PRIVATE include/flatrpc ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc)
 
+set_property(TARGET flatrpc-static PROPERTY CXX_STANDARD 20)
+
+target_link_libraries(flatrpc-static plog rpc_fbs flatbuffers zmqpp zmq uuid pthread)
+
+target_include_directories(flatrpc-static PUBLIC include ${CMAKE_CURRENT_BINARY_DIR}/include PRIVATE include/flatrpc ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc)
+
 install(DIRECTORY include/flatrpc DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h*")
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/flatrpc DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h*")
 
 install(
-  TARGETS flatrpc
+  TARGETS flatrpc flatrpc-static
   LIBRARY DESTINATION
+  ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION
   ${CMAKE_INSTALL_LIBDIR}
 )
