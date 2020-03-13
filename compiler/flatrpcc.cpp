@@ -46,6 +46,7 @@ struct BaseTypeInfo {
   bool flatter_supported;
 };
 
+// To be kept in sync with reflection.fbs & idl.h
 const array<const BaseTypeInfo, 18> baseTypes = {
   BaseTypeInfo {
     .name = "None",
@@ -133,7 +134,7 @@ const array<const BaseTypeInfo, 18> baseTypes = {
   },
   BaseTypeInfo {
     .name = "Vector",
-    .equivalent = "",
+    .equivalent = "std::vector",
     .direct = false,
     .flatter_supported = false,
   },
@@ -145,17 +146,19 @@ const array<const BaseTypeInfo, 18> baseTypes = {
   },
   BaseTypeInfo {
     .name = "Union",
-    .equivalent = "",
+    .equivalent = "std::variant",
     .direct = false,
     .flatter_supported = false,
   },
   BaseTypeInfo {
     .name = "Array",
-    .equivalent = "",
+    .equivalent = "std::vector",
     .direct = false,
     .flatter_supported = false,
   },
 };
+
+static_assert(baseTypes.size() == (static_cast<size_t>(reflection::BaseType::MAX) + 1));
 
 const string flatrpc_hpp_inja_tmpl(flatrpcc_inja_flatrpc_hpp_inja, flatrpcc_inja_flatrpc_hpp_inja + flatrpcc_inja_flatrpc_hpp_inja_len);
 const string flatrpc_cpp_inja_tmpl(flatrpcc_inja_flatrpc_cpp_inja, flatrpcc_inja_flatrpc_cpp_inja + flatrpcc_inja_flatrpc_cpp_inja_len);
