@@ -208,6 +208,7 @@ int main(int argc, char *argv[]) {
       json serviceData;
       json requestsData;
       json responsesData;
+      json tablesData;
       bool abstractClient = false;
       for (auto &kv : service->attributes) {
         if (kv->key == "abstract_client") {
@@ -222,6 +223,7 @@ int main(int argc, char *argv[]) {
       serviceData["calls"] = json::array();
       serviceData["requests"] = json::array();
       serviceData["responses"] = json::array();
+      serviceData["tables"] = json::array();
 
       for (auto call : service->calls) {
         auto name = call->name;
@@ -247,6 +249,11 @@ int main(int argc, char *argv[]) {
           obj["request"] = requestsData[request];
         }
 
+        if (tablesData.find(request) == tablesData.end()) {
+          serviceData["tables"].push_back(
+            tablesData[request] = requestsData[request]);
+        }
+
         if (responsesData.find(response) == responsesData.end()) {
           auto nsn = nsnamed(response);
           nsn["index"] = serviceData["responses"].size();
@@ -254,6 +261,11 @@ int main(int argc, char *argv[]) {
           obj["response"] = responsesData[response] = nsn;
         } else {
           obj["response"] = responsesData[response];
+        }
+
+        if (tablesData.find(response) == tablesData.end()) {
+          serviceData["tables"].push_back(
+            tablesData[response] = responsesData[response]);
         }
 
         obj["request"]["object"] = schemaData["objects"][request];

@@ -23,16 +23,10 @@
 
 class {{ service.local }}Base {
 public:
-## for request in service.requests
+## for request in service.tables
   using {{ request.local }}TPtr = std::shared_ptr<{{ request.cpp }}T>;
   using {{ request.local }}TFuture = std::future<{{ request.local }}TPtr>;
   using {{ request.local }}TPromise = std::promise<{{ request.local }}TPtr>;
-## endfor
-
-## for response in service.responses
-  using {{ response.local }}TPtr = std::shared_ptr<{{ response.cpp }}T>;
-  using {{ response.local }}TFuture = std::future<{{ response.local }}TPtr>;
-  using {{ response.local }}TPromise = std::promise<{{ response.local }}TPtr>;
 ## endfor
 
   using TRequestVar = std::variant<
