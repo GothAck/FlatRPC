@@ -13,16 +13,27 @@ template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 std::future<{{ service.nameClient }}::{{ call.response.local }}TPtr>
 {{ service.nameClient }}::{{ call.name }}(
 ## for field in call.request.object.fields
-  {{ field.base_type_equivalent }} {{ field.name }}{% if not loop/is_last %},{% endif %}
+  {{ field.base_type_equivalent }} {{ field.name }}_{% if not loop/is_last %},{% endif %}
 ## endfor
 ) {
   promise<{{ call.response.local }}TPtr> prom;
   auto fut = prom.get_future();
   flatbuffers::FlatBufferBuilder fbb;
+
+## for field in call.request.object.fields
+## if not field.base_type_direct
+  auto offset_{{ field.name }}_ = fbb.Create{{ field.base_type }}({{ field.name }}_);
+## endif
+## endfor
+
   {{ call.request.cpp }}Builder builder(fbb);
 
 ## for field in call.request.object.fields
-  builder.add_{{ field.name }}(fbb.Create{{ field.base_type }}({{ field.name }}));
+## if field.base_type_direct
+  builder.add_{{ field.name }}({{ field.name }}_);
+## else
+  builder.add_{{ field.name }}(offset_{{ field.name }}_);
+## endif
 ## endfor
 
   fbb.Finish(builder.Finish());

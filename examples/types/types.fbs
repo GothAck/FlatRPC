@@ -1,0 +1,68 @@
+namespace examples.simple;
+
+table BoolTable {
+  bool_field: bool;
+}
+
+table ByteTable {
+  byte_field: byte;
+}
+
+table UbyteTable {
+  ubyte_field: ubyte;
+}
+
+table ShortTable {
+  short_field: short;
+}
+
+table UshortTable {
+  ushort_field: ushort;
+}
+
+table IntTable {
+  int_field: int;
+}
+
+table UintTable {
+  uint_field: uint;
+}
+
+table LongTable {
+  long_field: long;
+}
+
+table UlongTable {
+  ulong_field: ulong;
+}
+
+table FloatTable {
+  float_field: float;
+}
+
+table DoubleTable {
+  double_field: double;
+}
+
+table StringTable {
+  string_field: string;
+}
+
+table Empty {}
+
+rpc_service Types {
+  Bool(BoolTable): BoolTable;
+  Byte(ByteTable): ByteTable;
+  Ubyte(UbyteTable): UbyteTable;
+  Short(ShortTable): ShortTable;
+  Ushort(UshortTable): UshortTable;
+  Int(IntTable): IntTable;
+  Uint(UintTable): UintTable;
+  Long(LongTable): LongTable;
+  Ulong(UlongTable): UlongTable;
+  Float(FloatTable): FloatTable;
+  Double(DoubleTable): DoubleTable;
+  String(StringTable): StringTable;
+
+  Quit(Empty): Empty;
+}

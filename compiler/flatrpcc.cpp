@@ -26,49 +26,6 @@ using json = nlohmann::json;
 using namespace std;
 namespace fs = std::filesystem;
 
-array<string, 18> baseTypeNames = {
-  "None",
-  "UType",
-  "Bool",
-  "Byte",
-  "UByte",
-  "Short",
-  "UShort",
-  "Int",
-  "UInt",
-  "Long",
-  "ULong",
-  "Float",
-  "Double",
-  "String",
-  "Vector",
-  "Obj",     // Used for tables & structs.
-  "Union",
-  "Array"
-};
-
-// Simple types only at the moment
-array<string, 18> baseTypeEquivalents = {
-  "",
-  "",
-  "bool",
-  "char",
-  "unsigned char",
-  "short",
-  "unsigned short",
-  "int",
-  "unsigned int",
-  "long",
-  "unsigned long",
-  "float",
-  "double",
-  "std::string",
-  "", // "std::vector<[ELEMENT]>",
-  "",     // Used for tables & structs.
-  "",
-  "", // "std::array<[ELEMENT], [FIXED_LENGTH]>"
-};
-
 static const char USAGE[] =
 R"(Flatrpc service generator
 
@@ -81,6 +38,124 @@ R"(Flatrpc service generator
       -o <dir> --output=<dir>   Output directory [Default: .].
       -h --help                 Show this screen.
 )";
+
+struct BaseTypeInfo {
+  string name;
+  string equivalent;
+  bool direct;
+  bool flatter_supported;
+};
+
+const array<const BaseTypeInfo, 18> baseTypes = {
+  BaseTypeInfo {
+    .name = "None",
+    .equivalent = "",
+    .direct = false,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "UType",
+    .equivalent = "",
+    .direct = false,
+    .flatter_supported = false,
+  },
+  BaseTypeInfo {
+    .name = "Bool",
+    .equivalent = "bool",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "Byte",
+    .equivalent = "char",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "UByte",
+    .equivalent = "unsigned char",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "Short",
+    .equivalent = "short",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "UShort",
+    .equivalent = "unsigned short",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "Int",
+    .equivalent = "int",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "UInt",
+    .equivalent = "unsigned int",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "Long",
+    .equivalent = "long",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "ULong",
+    .equivalent = "unsigned long",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "Float",
+    .equivalent = "float",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "Double",
+    .equivalent = "double",
+    .direct = true,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "String",
+    .equivalent = "std::string",
+    .direct = false,
+    .flatter_supported = true,
+  },
+  BaseTypeInfo {
+    .name = "Vector",
+    .equivalent = "",
+    .direct = false,
+    .flatter_supported = false,
+  },
+  BaseTypeInfo {
+    .name = "Obj",
+    .equivalent = "",
+    .direct = false,
+    .flatter_supported = false,
+  },
+  BaseTypeInfo {
+    .name = "Union",
+    .equivalent = "",
+    .direct = false,
+    .flatter_supported = false,
+  },
+  BaseTypeInfo {
+    .name = "Array",
+    .equivalent = "",
+    .direct = false,
+    .flatter_supported = false,
+  },
+};
 
 const string flatrpc_hpp_inja_tmpl(flatrpcc_inja_flatrpc_hpp_inja, flatrpcc_inja_flatrpc_hpp_inja + flatrpcc_inja_flatrpc_hpp_inja_len);
 const string flatrpc_cpp_inja_tmpl(flatrpcc_inja_flatrpc_cpp_inja, flatrpcc_inja_flatrpc_cpp_inja + flatrpcc_inja_flatrpc_cpp_inja_len);
@@ -178,20 +253,20 @@ int main(int argc, char *argv[]) {
         obj["name"] = name;
         obj["local"] = denamespace(name);
         obj["cpp"] = cppnamespace(name);
-        obj["base_type"] = baseTypeNames[static_cast<size_t>(type->base_type)];
-        obj["base_type_equivalent"] = baseTypeEquivalents[static_cast<size_t>(type->base_type)];
-        obj["element"] = baseTypeNames[static_cast<size_t>(type->element)];
-        obj["element_equivalent"] = baseTypeEquivalents[static_cast<size_t>(type->element)];
+
+        const auto &baseType = baseTypes[static_cast<size_t>(type->base_type)];
+        const auto &elementType = baseTypes[static_cast<size_t>(type->element)];
+
+        obj["base_type"] = baseType.name;
+        obj["base_type_equivalent"] = baseType.equivalent;
+        obj["base_type_direct"] = baseType.direct;
+        obj["element"] = elementType.name;
+        obj["element_equivalent"] = elementType.equivalent;
+        obj["element_direct"] = elementType.direct;
         obj["index"] = type->index;
         obj["fixed_length"] = type->fixed_length;
 
-        if (baseTypeEquivalents[static_cast<size_t>(type->base_type)] == "")
-          simple = false;
-
-        if (
-          baseTypeNames[static_cast<size_t>(type->element)] != "None" &&
-          baseTypeEquivalents[static_cast<size_t>(type->element)] == ""
-        )
+        if (!(baseType.flatter_supported && elementType.flatter_supported))
           simple = false;
 
         obj["local"] = denamespace(name);

@@ -89,7 +89,7 @@ public:
 ## if call.request.object.simple
   std::future<{{ call.response.local }}TPtr> {{ call.name }}(
 ## for field in call.request.object.fields
-    {{ field.base_type_equivalent }} {{ field.name }}{% if not loop/is_last %},{% endif %}
+    {{ field.base_type_equivalent }} {{ field.name }}_{% if not loop/is_last %},{% endif %}
 ## endfor
   );
 ## endif
