@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
   PLOG_ERROR << "timeouts " << num_timeouts << " / " << expected_timeouts;
   PLOG_ERROR << "success " << num_success << " vs timeouts " << num_timeouts << " == " << (num_success + num_timeouts);
 
+  client.Quit().get();
 
   client.stop();
   clientThread.join();

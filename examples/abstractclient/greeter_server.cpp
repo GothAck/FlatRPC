@@ -18,3 +18,13 @@ GreeterServer::HelloReplyTFuture GreeterServer::handleSayHello(
 
   return fut;
 }
+
+GreeterServer::EmptyTFuture GreeterServer::handleQuit(EmptyTPtr &&req, const TRouting &routing) {
+  EmptyTPromise prom;
+  auto rep = make_shared<EmptyT>();
+  prom.set_value(rep);
+
+  stop();
+
+  return prom.get_future();
+}

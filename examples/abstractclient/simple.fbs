@@ -10,6 +10,9 @@ table HelloRequest {
   name: string;
 }
 
+table Empty {}
+
 rpc_service Greeter (abstract_client) {
   SayHello(HelloRequest): HelloReply;
+  Quit(Empty): Empty;
 }

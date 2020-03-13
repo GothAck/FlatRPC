@@ -19,3 +19,13 @@ ExpensiveServer::ExpensiveReplyTFuture ExpensiveServer::handleExpensiveMethod(
 
   return fut;
 }
+
+ExpensiveServer::EmptyTFuture ExpensiveServer::handleQuit(EmptyTPtr &&req, const TRouting &routing) {
+  EmptyTPromise prom;
+  auto rep = make_shared<EmptyT>();
+  prom.set_value(rep);
+
+  stop();
+
+  return prom.get_future();
+}

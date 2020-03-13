@@ -34,6 +34,9 @@ int main(int argc, char *argv[]) {
   } catch (exception &e) {
     PLOG_ERROR << "Exception: " << e.what();
   }
+
+  client.Quit().get();
+
   client.stop();
   clientThread.join();
   return 0;

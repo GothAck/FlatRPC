@@ -10,4 +10,5 @@ public:
 protected:
 
   std::future<ExpensiveReplyTPtr> handleExpensiveMethod(ExpensiveRequestTPtr &&req, const TRouting &routing) override;
+  std::future<EmptyTPtr> handleQuit(EmptyTPtr &&req, const TRouting &routing) override;
 };
