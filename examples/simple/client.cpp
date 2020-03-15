@@ -33,9 +33,14 @@ int main(int argc, char *argv[]) {
     PLOG_INFO << "Reply: " << rep->message;
   } catch (exception &e) {
     PLOG_ERROR << "Exception: " << e.what();
+    return 1;
   }
 
-  client.Quit().get();
+  try {
+    client.Quit().get();
+  } catch (std::exception &e) {
+    PLOG_INFO << e.what() << " whilst calling quit";
+  }
 
   client.stop();
   clientThread.join();

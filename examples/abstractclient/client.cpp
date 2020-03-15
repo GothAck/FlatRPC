@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  client.connect("unix:///tmp/greeterserver");
+  client.connect("unix:///tmp/abstractserver");
 
   thread clientThread([] {
     client.run(); // Run the client event loop
@@ -33,9 +33,14 @@ int main(int argc, char *argv[]) {
     PLOG_INFO << "Reply: " << rep->message;
   } catch (exception &e) {
     PLOG_ERROR << "Exception: " << e.what();
+    return 1;
   }
 
-  client.Quit().get();
+  try {
+    client.Quit().get();
+  } catch (std::exception &e) {
+    PLOG_INFO << e.what() << " whilst calling quit";
+  }
 
   client.stop();
   clientThread.join();

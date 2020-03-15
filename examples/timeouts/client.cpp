@@ -2,6 +2,7 @@
 #include <deque>
 #include <utility>
 #include <array>
+#include <iomanip>
 
 #include <plog/Log.h>
 #include <plog/Appenders/ColorConsoleAppender.h>
@@ -34,7 +35,8 @@ int main(int argc, char *argv[]) {
 
   for (int i = 0; i < 5000; i++) {
     uint32_t milliseconds = rand() * (2000.0 / RAND_MAX);
-    if (milliseconds >= 1000)
+    // Expect everything over 950ms to timeout during this test
+    if (milliseconds >= 950)
       expected_timeouts++;
     expected_calls++;
     calls.emplace_back(i, milliseconds);
@@ -76,12 +78,28 @@ int main(int argc, char *argv[]) {
     t.join();
   }
 
+  double perc_actual = num_success;
+  perc_actual /= num_calls;
+  perc_actual *= 100;
+  double perc_expected = num_calls - expected_timeouts;
+  perc_expected /= num_calls;
+  perc_expected *= 100;
+
   PLOG_ERROR << "Finished";
   PLOG_ERROR << "calls " << num_calls << " / " << expected_calls;
-  PLOG_ERROR << "timeouts " << num_timeouts << " / " << expected_timeouts;
+  PLOG_ERROR << "timeouts " << num_timeouts << " vs expected " << expected_timeouts;
   PLOG_ERROR << "success " << num_success << " vs timeouts " << num_timeouts << " == " << (num_success + num_timeouts);
+  PLOG_ERROR << setprecision(4) << (perc_actual) << "% actual success rate";
+  PLOG_ERROR << setprecision(4) << (perc_expected) << "% expected success rate";
 
-  client.Quit().get();
+  if (perc_actual < (perc_expected - 10))
+    return 1;
+
+  try {
+    client.Quit().get();
+  } catch (std::exception &e) {
+    PLOG_INFO << e.what() << " whilst calling quit";
+  }
 
   client.stop();
   clientThread.join();

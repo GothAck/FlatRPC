@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
   static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
   plog::init(plog::verbose, &consoleAppender);
 
-  server.connect("unix+listen:///tmp/greeterserver");
+  server.connect("unix+listen:///tmp/abstractserver");
   server.run();
   return 0;
 }
