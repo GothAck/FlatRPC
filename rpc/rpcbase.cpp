@@ -62,7 +62,11 @@ void RpcBase::run(size_t workers) {
       _socket.send(msg);
     });
 
-    reactor.add(_socket, [this, &backend, &oob] {
+    reactor.add(_fd, [this] {
+      running.store(false);
+    }, poller::poll_error);
+
+    reactor.add(_socket, [this, &backend, &oob, &reactor] {
       message msg;
       _socket.receive(msg);
       auto routing = getRouting(msg);

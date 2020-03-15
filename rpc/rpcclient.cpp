@@ -27,11 +27,13 @@ RpcClientBase::RpcClientBase(zmqpp::context &ctx) :
   {}
 
 bool RpcClientBase::connect(std::string connStr) {
-  int fd = createSocketConnect(connStr);
-  if (fd < 0)
+  _fd = createSocketConnect(connStr);
+  if (_fd < 0)
     return false;
 
-  _socket.set(zmqpp::socket_option::use_fd, fd);
+  _socket.set(zmqpp::socket_option::use_fd, _fd);
+  // Do not attempt reconnect inside zmq
+  _socket.set(zmqpp::socket_option::reconnect_interval, -1);
   _socket.connect("ipc://" + connStr);
 
   return true;
@@ -70,6 +72,10 @@ void RpcClientBase::workerThread() {
         timeoutRequest(id);
       }
     }
+  }
+
+  for (auto p : _requestTimes) {
+    timeoutRequest(p.first);
   }
 }
 

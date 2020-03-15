@@ -74,6 +74,7 @@ protected:
 
   zmqpp::context &_context;
   zmqpp::socket _socket;
+  int _fd = -1;
 private:
   std::vector<std::thread> _requestThreads;
   std::thread _reactorThread;
