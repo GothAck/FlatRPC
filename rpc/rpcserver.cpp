@@ -15,7 +15,7 @@ RpcServerBase::RpcServerBase(zmqpp::context &context) :
 
 void RpcServerBase::run(size_t workers) {
   RpcBase::run(workers);
-  joinReactor();
+  joinThreads();
 }
 
 void RpcServerBase::workerThread() {

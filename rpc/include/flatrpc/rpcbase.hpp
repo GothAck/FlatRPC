@@ -60,7 +60,7 @@ public:
   virtual void run(size_t workers = 10);
   virtual void stop();
 protected:
-  void joinReactor();
+  void joinThreads();
   virtual void workerThread() = 0;
 
   TIntNativePtr unpackInt(const std::vector<unsigned char> &&data);

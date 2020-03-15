@@ -158,16 +158,24 @@ RpcBase::TIntNativePtr RpcBase::makeReply(TIntNativePtr req) {
 
 void RpcBase::stop() {
   running.store(false);
+  auto this_thread_id = this_thread::get_id();
 
-  _reactorThread.join();
+  // Only join threads outside of reactor or request threads
+  if (_reactorThread.get_id() == this_thread_id)
+    return;
   for (auto &t : _requestThreads) {
-    t.join();
+    if (t.get_id() == this_thread_id)
+      return;
   }
-
+  joinThreads();
 }
 
-void RpcBase::joinReactor() {
+void RpcBase::joinThreads() {
   _reactorThread.join();
+  for (auto &t : _requestThreads) {
+    if (this_thread::get_id() != t.get_id() && t.joinable())
+      t.join();
+  }
 }
 
 vector<unsigned char> RpcBase::packInt(uint64_t requestId, flatrpc::rpc::RPCType type, const string& name, vector<signed char> data) {
