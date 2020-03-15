@@ -67,7 +67,7 @@ void {{ service.nameClient }}::timeoutRequest(uint64_t requestId) {
     visit(overloaded {
 ## for response in service.responses
       [&]({{ response.local }}TPromise &prom) {
-        prom.set_exception(std::make_exception_ptr(exception("timeout")));
+        prom.set_exception(std::make_exception_ptr(timeout_exception("timeout")));
         PLOG_WARNING << "Request id " << requestId << " timed out";
       },
 ## endfor
@@ -99,7 +99,7 @@ void {{ service.nameClient }}::handleResponse(vector<unsigned char> &&response) 
     visit(overloaded {
 ## for response in service.responses
       [&]({{ response.local }}TPromise &prom) {
-        prom.set_exception(std::make_exception_ptr(exception("call name mismatch")));
+        prom.set_exception(std::make_exception_ptr(rpc_exception("call name mismatch")));
         PLOG_WARNING << "Request id " << requestId << " call name mismatch";
       },
 ## endfor
@@ -111,7 +111,7 @@ void {{ service.nameClient }}::handleResponse(vector<unsigned char> &&response) 
     visit(overloaded {
 ## for response in service.responses
       [&]({{ response.local }}TPromise &prom) {
-        prom.set_exception(std::make_exception_ptr(exception(nativeRes->exception->what)));
+        prom.set_exception(std::make_exception_ptr(rpc_exception(nativeRes->exception->what)));
       },
 ## endfor
     }, resPromiseVar);
@@ -128,7 +128,7 @@ void {{ service.nameClient }}::handleResponse(vector<unsigned char> &&response) 
 
       if (!verifier.VerifyBuffer<{{ response.cpp }}>(nullptr)) {
         PLOG_ERROR << "Error verifying buffer";
-        prom.set_exception(std::make_exception_ptr(exception("Invalid flatbuf data")));
+        prom.set_exception(std::make_exception_ptr(rpc_exception("Invalid flatbuf data")));
         return;
       }
 

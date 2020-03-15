@@ -45,9 +45,9 @@ protected:
 public:
   using TData = std::string;
 
-  class exception : public std::exception {
+  class rpc_exception : public std::exception {
   public:
-    exception(const std::string &what);
+    rpc_exception(const std::string &what);
 
     const char *what();
 

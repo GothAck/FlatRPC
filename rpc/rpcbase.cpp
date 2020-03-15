@@ -21,11 +21,11 @@ RpcBase::RpcBase(zmqpp::context &ctx, zmqpp
     _socket.set(zmqpp::socket_option::identity, _myId);
   }
 
-RpcBase::exception::exception(const string &what) :
+RpcBase::rpc_exception::rpc_exception(const string &what) :
   _what(what)
   {}
 
-const char *RpcBase::exception::what() {
+const char *RpcBase::rpc_exception::what() {
   return _what.c_str();
 }
 
@@ -144,7 +144,7 @@ flatrpc::rpc::RPCType RpcBase::getReplyType(flatrpc::rpc::RPCType type) {
         static_cast<uint8_t>(type) << 1);
       break;
     default:
-      throw exception("Cannot make reply from a reply");
+      throw rpc_exception("Cannot make reply from a reply");
   }
 }
 

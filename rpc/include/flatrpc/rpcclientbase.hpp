@@ -18,6 +18,10 @@ public:
 
   using RpcBase::RpcBase;
 
+  class timeout_exception : public rpc_exception {
+    using rpc_exception::rpc_exception;
+  };
+
   bool connect(std::string connStr) override;
 
 protected:

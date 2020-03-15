@@ -158,7 +158,7 @@ protected:
       } else
 ## endfor
       {
-        throw exception("Unknown request name");
+        throw rpc_exception("Unknown request name");
       }
     } catch (std::exception &e) {
       return packInt(reqInt->requestId, replyType, reqInt->name, e);
