@@ -417,8 +417,8 @@ struct EnumValT : public flatbuffers::NativeTable {
   }
   std::string name;
   int64_t value;
-  std::shared_ptr<reflection::ObjectT> object;
-  std::shared_ptr<reflection::TypeT> union_type;
+  std::unique_ptr<reflection::ObjectT> object;
+  std::unique_ptr<reflection::TypeT> union_type;
   std::vector<std::string> documentation;
   EnumValT()
       : value(0) {
@@ -590,10 +590,10 @@ struct EnumT : public flatbuffers::NativeTable {
     return "reflection.EnumT";
   }
   std::string name;
-  std::vector<std::shared_ptr<reflection::EnumValT>> values;
+  std::vector<std::unique_ptr<reflection::EnumValT>> values;
   bool is_union;
-  std::shared_ptr<reflection::TypeT> underlying_type;
-  std::vector<std::shared_ptr<reflection::KeyValueT>> attributes;
+  std::unique_ptr<reflection::TypeT> underlying_type;
+  std::vector<std::unique_ptr<reflection::KeyValueT>> attributes;
   std::vector<std::string> documentation;
   EnumT()
       : is_union(false) {
@@ -788,7 +788,7 @@ struct FieldT : public flatbuffers::NativeTable {
     return "reflection.FieldT";
   }
   std::string name;
-  std::shared_ptr<reflection::TypeT> type;
+  std::unique_ptr<reflection::TypeT> type;
   uint16_t id;
   uint16_t offset;
   int64_t default_integer;
@@ -796,7 +796,7 @@ struct FieldT : public flatbuffers::NativeTable {
   bool deprecated;
   bool required;
   bool key;
-  std::vector<std::shared_ptr<reflection::KeyValueT>> attributes;
+  std::vector<std::unique_ptr<reflection::KeyValueT>> attributes;
   std::vector<std::string> documentation;
   FieldT()
       : id(0),
@@ -1073,11 +1073,11 @@ struct ObjectT : public flatbuffers::NativeTable {
     return "reflection.ObjectT";
   }
   std::string name;
-  std::vector<std::shared_ptr<reflection::FieldT>> fields;
+  std::vector<std::unique_ptr<reflection::FieldT>> fields;
   bool is_struct;
   int32_t minalign;
   int32_t bytesize;
-  std::vector<std::shared_ptr<reflection::KeyValueT>> attributes;
+  std::vector<std::unique_ptr<reflection::KeyValueT>> attributes;
   std::vector<std::string> documentation;
   ObjectT()
       : is_struct(false),
@@ -1288,9 +1288,9 @@ struct RPCCallT : public flatbuffers::NativeTable {
     return "reflection.RPCCallT";
   }
   std::string name;
-  std::shared_ptr<reflection::ObjectT> request;
-  std::shared_ptr<reflection::ObjectT> response;
-  std::vector<std::shared_ptr<reflection::KeyValueT>> attributes;
+  std::unique_ptr<reflection::ObjectT> request;
+  std::unique_ptr<reflection::ObjectT> response;
+  std::vector<std::unique_ptr<reflection::KeyValueT>> attributes;
   std::vector<std::string> documentation;
   RPCCallT() {
   }
@@ -1466,8 +1466,8 @@ struct ServiceT : public flatbuffers::NativeTable {
     return "reflection.ServiceT";
   }
   std::string name;
-  std::vector<std::shared_ptr<reflection::RPCCallT>> calls;
-  std::vector<std::shared_ptr<reflection::KeyValueT>> attributes;
+  std::vector<std::unique_ptr<reflection::RPCCallT>> calls;
+  std::vector<std::unique_ptr<reflection::KeyValueT>> attributes;
   std::vector<std::string> documentation;
   ServiceT() {
   }
@@ -1625,12 +1625,12 @@ struct SchemaT : public flatbuffers::NativeTable {
   static FLATBUFFERS_CONSTEXPR const char *GetFullyQualifiedName() {
     return "reflection.SchemaT";
   }
-  std::vector<std::shared_ptr<reflection::ObjectT>> objects;
-  std::vector<std::shared_ptr<reflection::EnumT>> enums;
+  std::vector<std::unique_ptr<reflection::ObjectT>> objects;
+  std::vector<std::unique_ptr<reflection::EnumT>> enums;
   std::string file_ident;
   std::string file_ext;
-  std::shared_ptr<reflection::ObjectT> root_table;
-  std::vector<std::shared_ptr<reflection::ServiceT>> services;
+  std::unique_ptr<reflection::ObjectT> root_table;
+  std::vector<std::unique_ptr<reflection::ServiceT>> services;
   SchemaT() {
   }
 };
@@ -1813,9 +1813,9 @@ inline flatbuffers::Offset<Schema> CreateSchemaDirect(
 flatbuffers::Offset<Schema> CreateSchema(flatbuffers::FlatBufferBuilder &_fbb, const SchemaT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
 inline TypeT *Type::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new TypeT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::TypeT> _o = std::unique_ptr<reflection::TypeT>(new TypeT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Type::UnPackTo(TypeT *_o, const flatbuffers::resolver_function_t *_resolver) const {
@@ -1848,9 +1848,9 @@ inline flatbuffers::Offset<Type> CreateType(flatbuffers::FlatBufferBuilder &_fbb
 }
 
 inline KeyValueT *KeyValue::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new KeyValueT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::KeyValueT> _o = std::unique_ptr<reflection::KeyValueT>(new KeyValueT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void KeyValue::UnPackTo(KeyValueT *_o, const flatbuffers::resolver_function_t *_resolver) const {
@@ -1877,9 +1877,9 @@ inline flatbuffers::Offset<KeyValue> CreateKeyValue(flatbuffers::FlatBufferBuild
 }
 
 inline EnumValT *EnumVal::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new EnumValT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::EnumValT> _o = std::unique_ptr<reflection::EnumValT>(new EnumValT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void EnumVal::UnPackTo(EnumValT *_o, const flatbuffers::resolver_function_t *_resolver) const {
@@ -1887,8 +1887,8 @@ inline void EnumVal::UnPackTo(EnumValT *_o, const flatbuffers::resolver_function
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
   { auto _e = value(); _o->value = _e; }
-  { auto _e = object(); if (_e) _o->object = std::shared_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
-  { auto _e = union_type(); if (_e) _o->union_type = std::shared_ptr<reflection::TypeT>(_e->UnPack(_resolver)); }
+  { auto _e = object(); if (_e) _o->object = std::unique_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
+  { auto _e = union_type(); if (_e) _o->union_type = std::unique_ptr<reflection::TypeT>(_e->UnPack(_resolver)); }
   { auto _e = documentation(); if (_e) { _o->documentation.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->documentation[_i] = _e->Get(_i)->str(); } } }
 }
 
@@ -1915,19 +1915,19 @@ inline flatbuffers::Offset<EnumVal> CreateEnumVal(flatbuffers::FlatBufferBuilder
 }
 
 inline EnumT *Enum::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new EnumT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::EnumT> _o = std::unique_ptr<reflection::EnumT>(new EnumT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Enum::UnPackTo(EnumT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = values(); if (_e) { _o->values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->values[_i] = std::shared_ptr<reflection::EnumValT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = values(); if (_e) { _o->values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->values[_i] = std::unique_ptr<reflection::EnumValT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = is_union(); _o->is_union = _e; }
-  { auto _e = underlying_type(); if (_e) _o->underlying_type = std::shared_ptr<reflection::TypeT>(_e->UnPack(_resolver)); }
-  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::shared_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = underlying_type(); if (_e) _o->underlying_type = std::unique_ptr<reflection::TypeT>(_e->UnPack(_resolver)); }
+  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::unique_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = documentation(); if (_e) { _o->documentation.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->documentation[_i] = _e->Get(_i)->str(); } } }
 }
 
@@ -1956,16 +1956,16 @@ inline flatbuffers::Offset<Enum> CreateEnum(flatbuffers::FlatBufferBuilder &_fbb
 }
 
 inline FieldT *Field::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new FieldT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::FieldT> _o = std::unique_ptr<reflection::FieldT>(new FieldT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Field::UnPackTo(FieldT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = type(); if (_e) _o->type = std::shared_ptr<reflection::TypeT>(_e->UnPack(_resolver)); }
+  { auto _e = type(); if (_e) _o->type = std::unique_ptr<reflection::TypeT>(_e->UnPack(_resolver)); }
   { auto _e = id(); _o->id = _e; }
   { auto _e = offset(); _o->offset = _e; }
   { auto _e = default_integer(); _o->default_integer = _e; }
@@ -1973,7 +1973,7 @@ inline void Field::UnPackTo(FieldT *_o, const flatbuffers::resolver_function_t *
   { auto _e = deprecated(); _o->deprecated = _e; }
   { auto _e = required(); _o->required = _e; }
   { auto _e = key(); _o->key = _e; }
-  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::shared_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::unique_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = documentation(); if (_e) { _o->documentation.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->documentation[_i] = _e->Get(_i)->str(); } } }
 }
 
@@ -2012,20 +2012,20 @@ inline flatbuffers::Offset<Field> CreateField(flatbuffers::FlatBufferBuilder &_f
 }
 
 inline ObjectT *Object::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new ObjectT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::ObjectT> _o = std::unique_ptr<reflection::ObjectT>(new ObjectT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Object::UnPackTo(ObjectT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = fields(); if (_e) { _o->fields.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->fields[_i] = std::shared_ptr<reflection::FieldT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = fields(); if (_e) { _o->fields.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->fields[_i] = std::unique_ptr<reflection::FieldT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = is_struct(); _o->is_struct = _e; }
   { auto _e = minalign(); _o->minalign = _e; }
   { auto _e = bytesize(); _o->bytesize = _e; }
-  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::shared_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::unique_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = documentation(); if (_e) { _o->documentation.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->documentation[_i] = _e->Get(_i)->str(); } } }
 }
 
@@ -2056,18 +2056,18 @@ inline flatbuffers::Offset<Object> CreateObject(flatbuffers::FlatBufferBuilder &
 }
 
 inline RPCCallT *RPCCall::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new RPCCallT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::RPCCallT> _o = std::unique_ptr<reflection::RPCCallT>(new RPCCallT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void RPCCall::UnPackTo(RPCCallT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = request(); if (_e) _o->request = std::shared_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
-  { auto _e = response(); if (_e) _o->response = std::shared_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
-  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::shared_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = request(); if (_e) _o->request = std::unique_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
+  { auto _e = response(); if (_e) _o->response = std::unique_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
+  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::unique_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = documentation(); if (_e) { _o->documentation.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->documentation[_i] = _e->Get(_i)->str(); } } }
 }
 
@@ -2094,17 +2094,17 @@ inline flatbuffers::Offset<RPCCall> CreateRPCCall(flatbuffers::FlatBufferBuilder
 }
 
 inline ServiceT *Service::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new ServiceT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::ServiceT> _o = std::unique_ptr<reflection::ServiceT>(new ServiceT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Service::UnPackTo(ServiceT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = name(); if (_e) _o->name = _e->str(); }
-  { auto _e = calls(); if (_e) { _o->calls.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->calls[_i] = std::shared_ptr<reflection::RPCCallT>(_e->Get(_i)->UnPack(_resolver)); } } }
-  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::shared_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = calls(); if (_e) { _o->calls.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->calls[_i] = std::unique_ptr<reflection::RPCCallT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = attributes(); if (_e) { _o->attributes.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->attributes[_i] = std::unique_ptr<reflection::KeyValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = documentation(); if (_e) { _o->documentation.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->documentation[_i] = _e->Get(_i)->str(); } } }
 }
 
@@ -2129,20 +2129,20 @@ inline flatbuffers::Offset<Service> CreateService(flatbuffers::FlatBufferBuilder
 }
 
 inline SchemaT *Schema::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new SchemaT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<reflection::SchemaT> _o = std::unique_ptr<reflection::SchemaT>(new SchemaT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Schema::UnPackTo(SchemaT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = objects(); if (_e) { _o->objects.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->objects[_i] = std::shared_ptr<reflection::ObjectT>(_e->Get(_i)->UnPack(_resolver)); } } }
-  { auto _e = enums(); if (_e) { _o->enums.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->enums[_i] = std::shared_ptr<reflection::EnumT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = objects(); if (_e) { _o->objects.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->objects[_i] = std::unique_ptr<reflection::ObjectT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = enums(); if (_e) { _o->enums.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->enums[_i] = std::unique_ptr<reflection::EnumT>(_e->Get(_i)->UnPack(_resolver)); } } }
   { auto _e = file_ident(); if (_e) _o->file_ident = _e->str(); }
   { auto _e = file_ext(); if (_e) _o->file_ext = _e->str(); }
-  { auto _e = root_table(); if (_e) _o->root_table = std::shared_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
-  { auto _e = services(); if (_e) { _o->services.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->services[_i] = std::shared_ptr<reflection::ServiceT>(_e->Get(_i)->UnPack(_resolver)); } } }
+  { auto _e = root_table(); if (_e) _o->root_table = std::unique_ptr<reflection::ObjectT>(_e->UnPack(_resolver)); }
+  { auto _e = services(); if (_e) { _o->services.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->services[_i] = std::unique_ptr<reflection::ServiceT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<Schema> Schema::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SchemaT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -2498,16 +2498,16 @@ inline void FinishSizePrefixedSchemaBuffer(
   fbb.FinishSizePrefixed(root, SchemaIdentifier());
 }
 
-inline std::shared_ptr<reflection::SchemaT> UnPackSchema(
+inline std::unique_ptr<reflection::SchemaT> UnPackSchema(
     const void *buf,
     const flatbuffers::resolver_function_t *res = nullptr) {
-  return std::shared_ptr<reflection::SchemaT>(GetSchema(buf)->UnPack(res));
+  return std::unique_ptr<reflection::SchemaT>(GetSchema(buf)->UnPack(res));
 }
 
-inline std::shared_ptr<reflection::SchemaT> UnPackSizePrefixedSchema(
+inline std::unique_ptr<reflection::SchemaT> UnPackSizePrefixedSchema(
     const void *buf,
     const flatbuffers::resolver_function_t *res = nullptr) {
-  return std::shared_ptr<reflection::SchemaT>(GetSizePrefixedSchema(buf)->UnPack(res));
+  return std::unique_ptr<reflection::SchemaT>(GetSizePrefixedSchema(buf)->UnPack(res));
 }
 
 }  // namespace reflection

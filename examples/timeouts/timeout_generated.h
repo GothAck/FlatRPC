@@ -211,9 +211,9 @@ struct ExpensiveRequest::Traits {
 flatbuffers::Offset<ExpensiveRequest> CreateExpensiveRequest(flatbuffers::FlatBufferBuilder &_fbb, const ExpensiveRequestT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
 inline ExpensiveReplyT *ExpensiveReply::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new ExpensiveReplyT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<examples::timeouts::ExpensiveReplyT> _o = std::unique_ptr<examples::timeouts::ExpensiveReplyT>(new ExpensiveReplyT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void ExpensiveReply::UnPackTo(ExpensiveReplyT *_o, const flatbuffers::resolver_function_t *_resolver) const {
@@ -237,9 +237,9 @@ inline flatbuffers::Offset<ExpensiveReply> CreateExpensiveReply(flatbuffers::Fla
 }
 
 inline ExpensiveRequestT *ExpensiveRequest::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new ExpensiveRequestT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<examples::timeouts::ExpensiveRequestT> _o = std::unique_ptr<examples::timeouts::ExpensiveRequestT>(new ExpensiveRequestT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void ExpensiveRequest::UnPackTo(ExpensiveRequestT *_o, const flatbuffers::resolver_function_t *_resolver) const {

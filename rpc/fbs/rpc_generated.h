@@ -171,7 +171,7 @@ struct RPCT : public flatbuffers::NativeTable {
   flatrpc::rpc::RPCType type;
   std::string name;
   std::vector<int8_t> data;
-  std::shared_ptr<flatrpc::rpc::ExceptionT> exception;
+  std::unique_ptr<flatrpc::rpc::ExceptionT> exception;
   RPCT()
       : requestId(0),
         type(flatrpc::rpc::RPCType::UNKNOWN) {
@@ -329,9 +329,9 @@ inline flatbuffers::Offset<RPC> CreateRPCDirect(
 flatbuffers::Offset<RPC> CreateRPC(flatbuffers::FlatBufferBuilder &_fbb, const RPCT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
 inline ExceptionT *Exception::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new ExceptionT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<flatrpc::rpc::ExceptionT> _o = std::unique_ptr<flatrpc::rpc::ExceptionT>(new ExceptionT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Exception::UnPackTo(ExceptionT *_o, const flatbuffers::resolver_function_t *_resolver) const {
@@ -355,9 +355,9 @@ inline flatbuffers::Offset<Exception> CreateException(flatbuffers::FlatBufferBui
 }
 
 inline RPCT *RPC::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new RPCT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<flatrpc::rpc::RPCT> _o = std::unique_ptr<flatrpc::rpc::RPCT>(new RPCT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void RPC::UnPackTo(RPCT *_o, const flatbuffers::resolver_function_t *_resolver) const {
@@ -367,7 +367,7 @@ inline void RPC::UnPackTo(RPCT *_o, const flatbuffers::resolver_function_t *_res
   { auto _e = type(); _o->type = _e; }
   { auto _e = name(); if (_e) _o->name = _e->str(); }
   { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } }
-  { auto _e = exception(); if (_e) _o->exception = std::shared_ptr<flatrpc::rpc::ExceptionT>(_e->UnPack(_resolver)); }
+  { auto _e = exception(); if (_e) _o->exception = std::unique_ptr<flatrpc::rpc::ExceptionT>(_e->UnPack(_resolver)); }
 }
 
 inline flatbuffers::Offset<RPC> RPC::Pack(flatbuffers::FlatBufferBuilder &_fbb, const RPCT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
