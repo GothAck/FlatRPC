@@ -1,6 +1,6 @@
 dist: bionic
 language: cpp
 compiler: gcc
-install: add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update && apt-get upgrade -y && apt-get install -y gcc-9 libzmqpp-dev
+install: sudo bash -c "add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update && apt-get upgrade -y && apt-get install -y gcc-9 libzmqpp-dev"
 script: mkdir build && cd build && cmake .. && make && make test examples_as_tests
 
