@@ -8,7 +8,7 @@ function(build_flatbuf)
             COMMAND
                 flatc
                 --cpp --gen-mutable --gen-name-strings --gen-object-api --gen-compare --reflect-names
-                --cpp-ptr-type std::shared_ptr --cpp-std c++17
+                --cpp-std c++17
                 ${input}
             DEPENDS ${input}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

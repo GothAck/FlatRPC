@@ -232,7 +232,7 @@ int main(int argc, char *argv[]) {
     schemaData["flatrpc_gitrev"] = flatrpc_gitrev;
     schemaData["objects"] = json();
 
-    for (auto object : schema->objects) {
+    for (auto &object : schema->objects) {
       json objectData;
       json requestsData;
       json responsesData;
@@ -243,9 +243,9 @@ int main(int argc, char *argv[]) {
 
       bool simple = true;
 
-      for (auto field : object->fields) {
+      for (auto &field : object->fields) {
         auto name = field->name;
-        auto type = field->type;
+        auto &type = field->type;
         map<string, string> attributes;
 
         for (auto &kv : field->attributes) {
@@ -282,7 +282,7 @@ int main(int argc, char *argv[]) {
       schemaData["objects"][object->name] = objectData;
     }
 
-    for (auto service : schema->services) {
+    for (auto &service : schema->services) {
       json serviceData;
       json requestsData;
       json responsesData;
@@ -303,7 +303,7 @@ int main(int argc, char *argv[]) {
       serviceData["responses"] = json::array();
       serviceData["tables"] = json::array();
 
-      for (auto call : service->calls) {
+      for (auto &call : service->calls) {
         auto name = call->name;
         auto request = call->request->name;
         auto response = call->response->name;
