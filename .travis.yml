@@ -2,5 +2,5 @@ dist: bionic
 language: cpp
 compiler: gcc
 install: util/get-deps.sh
-script: mkdir build && cd build && cmake .. && make && make test examples_as_tests
+script: mkdir build && cd build && CPP=gcc-9 CXX=g++-9 cmake .. && make && make test examples_as_tests
 
