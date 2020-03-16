@@ -1,3 +1,5 @@
+![BeerPay](https://img.shields.io/beerpay/GothAck/FlatRPC)
+
 # ![FlatRPC](https://raw.githubusercontent.com/GothAck/FlatRPC/master/docs/flatrpc1.png)
 
 ## A C++ RPC library built upon FlatBuffers and ZeroMQ
