@@ -1,4 +1,5 @@
-build
+build*
 cmake-build-debug
 .idea
 tools/flatrpc_inja/*.h
+.src
